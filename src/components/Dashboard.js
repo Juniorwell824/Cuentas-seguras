@@ -965,141 +965,149 @@ const Dashboard = ({ user, handleLogout }) => {
   };
 
   return (
-    <div style={dashboardStyles.container}>
-      {/* Header del dashboard con estructura solicitada */}
-      <header className="dashboard-header" style={headerStyles.dashboardHeader}>
-        <div className="header-content" style={headerStyles.headerContent}>
-          <div className="user-info" style={headerStyles.userInfo}>
-            <div className="avatar" style={headerStyles.avatar}>
-              {currentUser.profilePicture ? (
-                <img 
-                  src={currentUser.profilePicture} 
-                  alt="Usuario" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              ) : (
-                <div style={headerStyles.avatarPlaceholder}>👤</div>
-              )}
-            </div>
+    <div className="dashboard-layout">
+      <div className="dashboard-content-wrapper">
+        {/* Header del dashboard */}
+        <div className="dashboard-header-wrapper">
+          <header className="dashboard-header" style={headerStyles.dashboardHeader}>
+            <div className="header-content" style={headerStyles.headerContent}>
+              <div className="user-info" style={headerStyles.userInfo}>
+                <div className="avatar" style={headerStyles.avatar}>
+                  {currentUser.profilePicture ? (
+                    <img 
+                      src={currentUser.profilePicture} 
+                      alt="Usuario" 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div style={headerStyles.avatarPlaceholder}>👤</div>
+                  )}
+                </div>
 
-            <div className="user-text" style={headerStyles.userText}>
-              <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
-              <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
-              <span className="email" style={headerStyles.email}>
-                {currentUser.username || user.email}
-              </span>
-              
+                <div className="user-text" style={headerStyles.userText}>
+                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
+                  <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
+                  <span className="email" style={headerStyles.email}>
+                    {currentUser.username || user.email}
+                  </span>
+                  
+                  <button 
+                    className="logout-btn" 
+                    style={headerStyles.logoutBtn}
+                    onClick={handleLogout}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <span>🚪</span> Cerrar sesión
+                  </button>
+                </div>
+              </div>
+
               <button 
-                className="logout-btn" 
-                style={headerStyles.logoutBtn}
-                onClick={handleLogout}
+                className="settings-btn" 
+                style={headerStyles.settingsBtn}
+                onClick={() => setActiveSection('config')}
+                title="Configuración"
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
-                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
                 }}
               >
-                <span>🚪</span> Cerrar sesión
+                ⚙️
               </button>
             </div>
-          </div>
-
-          <button 
-            className="settings-btn" 
-            style={headerStyles.settingsBtn}
-            onClick={() => setActiveSection('config')}
-            title="Configuración"
-            onMouseOver={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-              e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
-              e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
-            }}
-          >
-            ⚙️
-          </button>
+          </header>
         </div>
-      </header>
-      
-      {/* Botones de navegación */}
-      <div style={dashboardStyles.btnGroup}>
-        <button 
-          style={{
-            ...dashboardStyles.btn,
-            backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
-            color: activeSection === 'gmail' ? 'white' : '#666',
-          }}
-          onClick={() => setActiveSection('gmail')}
-          onMouseOver={(e) => {
-            if (activeSection !== 'gmail') {
-              e.currentTarget.style.backgroundColor = '#e0e0e0';
-            }
-          }}
-          onMouseOut={(e) => {
-            if (activeSection !== 'gmail') {
-              e.currentTarget.style.backgroundColor = '#f5f5f5';
-            }
-          }}
-        >
-          <span>📧</span> Cuentas de Gmail
-        </button>
-        <button 
-          style={{
-            ...dashboardStyles.btn,
-            backgroundColor: activeSection === 'other' ? '#007bff' : '#f5f5f5',
-            color: activeSection === 'other' ? 'white' : '#666',
-          }}
-          onClick={() => setActiveSection('other')}
-          onMouseOver={(e) => {
-            if (activeSection !== 'other') {
-              e.currentTarget.style.backgroundColor = '#e0e0e0';
-            }
-          }}
-          onMouseOut={(e) => {
-            if (activeSection !== 'other') {
-              e.currentTarget.style.backgroundColor = '#f5f5f5';
-            }
-          }}
-        >
-          <span>👥</span> Otras Cuentas
-        </button>
-        <button 
-          style={{
-            ...dashboardStyles.btn,
-            backgroundColor: activeSection === 'bank' ? '#007bff' : '#f5f5f5',
-            color: activeSection === 'bank' ? 'white' : '#666',
-          }}
-          onClick={() => setActiveSection('bank')}
-          onMouseOver={(e) => {
-            if (activeSection !== 'bank') {
-              e.currentTarget.style.backgroundColor = '#e0e0e0';
-            }
-          }}
-          onMouseOut={(e) => {
-            if (activeSection !== 'bank') {
-              e.currentTarget.style.backgroundColor = '#f5f5f5';
-            }
-          }}
-        >
-          <span>🏦</span> Datos Bancarios
-        </button>
-      </div>
-      
-      {/* Contenido principal */}
-      <div style={{ minHeight: '400px' }}>
-        {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
-        {activeSection === 'other' && <OtherAccounts user={currentUser} />}
-        {activeSection === 'bank' && <BankData user={currentUser} />}
-        {activeSection === 'config' && <UserConfigSection />}
+
+        {/* Botones de navegación - Modificado */}
+        <div className="nav-buttons-container">
+          <div style={dashboardStyles.btnGroup} className="nav-btn-group">
+            <button 
+              style={{
+                ...dashboardStyles.btn,
+                backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
+                color: activeSection === 'gmail' ? 'white' : '#666',
+              }}
+              onClick={() => setActiveSection('gmail')}
+              onMouseOver={(e) => {
+                if (activeSection !== 'gmail') {
+                  e.currentTarget.style.backgroundColor = '#e0e0e0';
+                }
+              }}
+              onMouseOut={(e) => {
+                if (activeSection !== 'gmail') {
+                  e.currentTarget.style.backgroundColor = '#f5f5f5';
+                }
+              }}
+            >
+              <span>📧</span> Cuentas de Gmail
+            </button>
+            <button 
+              style={{
+                ...dashboardStyles.btn,
+                backgroundColor: activeSection === 'other' ? '#007bff' : '#f5f5f5',
+                color: activeSection === 'other' ? 'white' : '#666',
+              }}
+              onClick={() => setActiveSection('other')}
+              onMouseOver={(e) => {
+                if (activeSection !== 'other') {
+                  e.currentTarget.style.backgroundColor = '#e0e0e0';
+                }
+              }}
+              onMouseOut={(e) => {
+                if (activeSection !== 'other') {
+                  e.currentTarget.style.backgroundColor = '#f5f5f5';
+                }
+              }}
+            >
+              <span>👥</span> Otras Cuentas
+            </button>
+            <button 
+              style={{
+                ...dashboardStyles.btn,
+                backgroundColor: activeSection === 'bank' ? '#007bff' : '#f5f5f5',
+                color: activeSection === 'bank' ? 'white' : '#666',
+              }}
+              onClick={() => setActiveSection('bank')}
+              onMouseOver={(e) => {
+                if (activeSection !== 'bank') {
+                  e.currentTarget.style.backgroundColor = '#e0e0e0';
+                }
+              }}
+              onMouseOut={(e) => {
+                if (activeSection !== 'bank') {
+                  e.currentTarget.style.backgroundColor = '#f5f5f5';
+                }
+              }}
+            >
+              <span>🏦</span> Datos Bancarios
+            </button>
+          </div>
+        </div>
+        
+        {/* Contenido principal - Modificado */}
+        <div className="section-content-wrapper">
+          <div className="section-content" style={{ minHeight: '400px' }}>
+            {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
+            {activeSection === 'other' && <OtherAccounts user={currentUser} />}
+            {activeSection === 'bank' && <BankData user={currentUser} />}
+            {activeSection === 'config' && <UserConfigSection />}
+          </div>
+        </div>
       </div>
     </div>
   );

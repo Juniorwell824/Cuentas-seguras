@@ -828,3 +828,1055 @@ body {
     font-size: 28px;
   }
 }
+
+/* ============================================
+   MEJORAS ESPECÍFICAS PARA RESPONSIVE MÓVIL
+   ============================================ */
+
+/* Media Query específica para móviles (por debajo de 480px) */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+    background: #f5f7fa;
+  }
+  
+  /* Contenedor principal para móvil */
+  .container {
+    padding: 12px;
+    max-width: 100%;
+  }
+  
+  /* HEADER MEJORADO PARA MÓVIL */
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    margin-bottom: 20px;
+    border-radius: 0 0 16px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-left {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+  
+  .dashboard-title {
+    font-size: 20px;
+    order: 1;
+    margin-left: 12px;
+  }
+  
+  .header-logo {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    order: 0;
+  }
+  
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  
+  /* USER MENU COMPACTO */
+  .user-menu {
+    padding: 6px 12px;
+    background: rgba(79, 70, 229, 0.08);
+    border-radius: 12px;
+    flex: 1;
+    min-width: 0; /* Permite que se encoja */
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .user-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+  
+  .user-info h3 {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .user-info p {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Botón de cerrar sesión compacto */
+  .btn-logout {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 10px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* CONTENIDO PRINCIPAL */
+  .main-content {
+    padding: 0 8px;
+  }
+  
+  /* SECCIONES DE CONTENIDO */
+  .content-section {
+    padding: 20px 16px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eef2f7;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .section-title::before {
+    width: 4px;
+    height: 20px;
+  }
+  
+  /* GRID DE DATOS MEJORADO */
+  .data-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .data-card {
+    padding: 20px 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+  
+  /* TARJETAS DE CUENTAS */
+  .account-card {
+    position: relative;
+    padding: 16px;
+    border-left: 4px solid var(--primary);
+  }
+  
+  .account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  
+  .account-type {
+    font-size: 12px;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .account-email {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 8px 0;
+    word-break: break-all;
+  }
+  
+  /* CHECKBOX MEJORADO PARA TOCAR */
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .checkbox-item:hover {
+    background: #f1f5f9;
+    border-color: var(--primary-light);
+  }
+  
+  .checkbox-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--gray-300);
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .checkbox-item input[type="checkbox"]:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  
+  .checkbox-item input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .checkbox-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-800);
+    flex: 1;
+  }
+  
+  /* BOTONES EN MÓVIL */
+  .btn {
+    padding: 14px 20px;
+    font-size: 15px;
+    border-radius: 12px;
+  }
+  
+  .btn-full {
+    width: 100%;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  .btn-group .btn {
+    width: 100%;
+  }
+  
+  /* FORMULARIOS EN MÓVIL */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-label {
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+    width: 100%;
+  }
+  
+  .form-input {
+    padding: 14px 16px;
+    font-size: 16px; /* Importante para evitar zoom en iOS */
+    border-radius: 10px;
+  }
+  
+  /* MENÚ DE NAVEGACIÓN INFERIOR PARA MÓVIL */
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.98);
+  }
+  
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--gray-600);
+    transition: all 0.2s;
+  }
+  
+  .nav-item.active {
+    color: var(--primary);
+    background: rgba(79, 70, 229, 0.1);
+  }
+  
+  .nav-icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  
+  .nav-label {
+    font-size: 11px;
+    font-weight: 500;
+  }
+  
+  /* Ajustar contenido para evitar solapamiento con nav inferior */
+  body {
+    padding-bottom: 70px;
+  }
+  
+  /* MEJORAS VISUALES */
+  .card-shadow {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* TEXTO RESPONSIVE */
+  .text-mobile-center {
+    text-align: center;
+  }
+  
+  .text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* SCROLL SUAVE */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+  
+  /* ELIMINAR SOMBRAS EXCESIVAS EN MÓVIL */
+  .metric-card,
+  .data-card,
+  .content-section {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* AJUSTES ESPECÍFICOS PARA EL FORMULARIO DE AGREGAR */
+  .add-form-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1100;
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  
+  .form-actions .btn {
+    flex: 1;
+  }
+}
+
+/* Media Query para tablets pequeñas (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .dashboard-header {
+    padding: 20px;
+  }
+  
+  .content-section {
+    padding: 24px;
+  }
+  
+  .data-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Media Query para tablets (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .mobile-nav {
+    display: none;
+  }
+  
+  body {
+    padding-bottom: 0;
+  }
+}
+
+/* Ocultar navegación móvil en escritorio */
+@media (min-width: 768px) {
+  .mobile-nav {
+    display: none;
+  }
+}
+
+/* Animación para modales móviles */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Mejora de accesibilidad para toque */
+@media (hover: none) and (pointer: coarse) {
+  .btn,
+  .checkbox-item,
+  .user-menu,
+  .data-card {
+    min-height: 44px; /* Tamaño mínimo recomendado para toque */
+  }
+  
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Evita zoom automático en iOS */
+  }
+}
+
+/* Soporte para modo oscuro en móviles */
+@media (prefers-color-scheme: dark) and (max-width: 480px) {
+  body {
+    background: #0f172a;
+    color: #e2e8f0;
+  }
+  
+  .content-section,
+  .data-card,
+  .metric-card {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  
+  .checkbox-item {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  
+  .user-menu {
+    background: rgba(79, 70, 229, 0.15);
+  }
+  
+  .mobile-nav {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  
+  .dashboard-title {
+    color: white;
+    -webkit-text-fill-color: white;
+  }
+}
+
+/* ============================================
+   CENTRADO EN PC Y MEJORAS RESPONSIVE
+   ============================================ */
+
+/* Contenedor principal centrado en PC */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Contenedor del contenido principal - CENTRADO en PC */
+.main-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Centrar el contenido principal solo en PC */
+@media (min-width: 1024px) {
+  .main-content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 24px;
+  }
+}
+
+/* GRID PRINCIPAL CENTRADO */
+.dashboard-grid {
+  display: grid;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    max-width: 900px; /* Ancho máximo para centrar */
+    margin: 0 auto; /* Centrado horizontal */
+  }
+}
+
+/* TARJETA DE ERROR - MEJORADA Y CENTRADA */
+.error-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  border-left: 6px solid var(--danger);
+  margin-bottom: 32px;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+@media (min-width: 1024px) {
+  .error-card {
+    max-width: 800px;
+    margin: 32px auto;
+  }
+}
+
+/* CONTENIDO DE ERROR - CENTRADO */
+.error-content {
+  text-align: center;
+}
+
+.error-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  color: var(--danger);
+  font-size: 40px;
+  box-shadow: var(--shadow-md);
+}
+
+.error-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.error-subtitle {
+  font-size: 18px;
+  color: var(--gray-600);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+/* LISTA DE ERRORES - MEJORADA */
+.error-list {
+  background: #fef2f2;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin: 24px 0;
+  border: 1px solid #fecaca;
+  text-align: left;
+}
+
+.error-list h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--danger);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-list ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.error-list li {
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background: white;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--danger);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all var(--transition-fast);
+}
+
+.error-list li:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+
+.error-list li::before {
+  content: "⚠️";
+  font-size: 18px;
+}
+
+/* SECCIONES DE CUENTAS - CENTRADAS */
+.accounts-section {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 32px;
+}
+
+@media (min-width: 1024px) {
+  .accounts-section {
+    max-width: 800px;
+    margin: 32px auto;
+  }
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.section-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+
+.section-header p {
+  color: var(--gray-600);
+  font-size: 16px;
+}
+
+/* TARJETA DE CUENTA - MEJORADA */
+.account-card-wrapper {
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .account-card-wrapper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .account-card-wrapper {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+}
+
+.account-card {
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.account-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+
+.account-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.account-card:hover::before {
+  opacity: 1;
+}
+
+/* CABECERA DE TARJETA DE CUENTA */
+.account-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.account-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.account-info {
+  flex: 1;
+}
+
+.account-type {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.account-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  font-weight: 500;
+}
+
+.account-status.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+/* DETALLES DE LA CUENTA */
+.account-details {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-800);
+  word-break: break-all;
+  text-align: right;
+  max-width: 200px;
+}
+
+/* BOTONES DE ACCIÓN - CENTRADOS */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .action-buttons {
+    justify-content: center;
+  }
+}
+
+/* FORMULARIO DE AGREGAR CUENTA - CENTRADO */
+.add-account-form {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  margin-top: 32px;
+}
+
+@media (min-width: 1024px) {
+  .add-account-form {
+    max-width: 600px;
+    margin: 32px auto;
+  }
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.form-header h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+
+.form-header p {
+  color: var(--gray-600);
+}
+
+/* INPUT GROUP MEJORADO */
+.input-group {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  font-size: 20px;
+}
+
+.input-with-icon .form-input {
+  padding-left: 48px;
+}
+
+/* DIVISOR ELEGANTE */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 32px 0;
+  color: var(--gray-500);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.divider span {
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* FOOTER DEL DASHBOARD - CENTRADO */
+.dashboard-footer {
+  text-align: center;
+  padding: 24px;
+  margin-top: 48px;
+  color: var(--gray-600);
+  font-size: 14px;
+  border-top: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+
+@media (min-width: 1024px) {
+  .dashboard-footer {
+    max-width: 1200px;
+    margin: 48px auto 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+}
+
+/* UTILIDADES PARA CENTRADO */
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.center-horizontal {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.center-vertical {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* ANIMACIÓN DE CARGA */
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--gray-200);
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 40px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* MEJORAS ESPECÍFICAS PARA PC GRANDES */
+@media (min-width: 1400px) {
+  .main-content-wrapper {
+    max-width: 1400px;
+  }
+  
+  .dashboard-grid {
+    max-width: 1200px;
+  }
+}
+
+/* RESPONSIVE MÓVIL (Mantiene las mejoras anteriores) */
+@media (max-width: 480px) {
+  .error-card {
+    padding: 24px 20px;
+    margin: 16px;
+  }
+  
+  .error-title {
+    font-size: 24px;
+  }
+  
+  .error-subtitle {
+    font-size: 16px;
+  }
+  
+  .accounts-section {
+    padding: 24px 20px;
+    margin: 20px 16px;
+  }
+  
+  .account-card-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons .btn {
+    width: 100%;
+  }
+}
+
+/* ============================================
+   CENTRADO ESPECÍFICO PARA PC
+   ============================================ */
+
+/* Contenedor principal centrado para PC */
+@media (min-width: 1024px) {
+  .dashboard-layout {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f6f7fb 0%, #f1f5f9 100%);
+  }
+  
+  .dashboard-content-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    padding: 30px;
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para mantener el responsive en móvil/tablet */
+@media (max-width: 1023px) {
+  .dashboard-content-wrapper {
+    width: 100%;
+    padding: 20px 15px;
+  }
+}
+
+/* Asegurar que el header también se centre */
+@media (min-width: 1024px) {
+  .dashboard-header-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Botones de navegación centrados en PC */
+@media (min-width: 1024px) {
+  .nav-buttons-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  
+  .nav-btn-group {
+    display: inline-flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+}
+
+/* Contenido de secciones centrado */
+@media (min-width: 1024px) {
+  .section-content-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .section-content {
+    width: 100%;
+    max-width: 900px;
+  }
+}
