@@ -42,7 +42,7 @@ const Login = ({ setView }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            placeholder="saultorr19@gmail.com" // Cambiado para coincidir con la imagen
+            placeholder="example@gmail.com" // Cambiado para coincidir con la imagen
           />
         </div>
         
