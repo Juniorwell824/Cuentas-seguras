@@ -863,56 +863,6 @@ const Dashboard = ({ user, handleLogout }) => {
       padding: '20px',
       fontFamily: 'Arial, sans-serif'
     },
-    dashboardHeader: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '20px 0',
-      marginBottom: '30px',
-      borderBottom: '1px solid #e0e0e0',
-    },
-    userInfo: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '15px',
-    },
-    userAvatar: {
-      width: '60px',
-      height: '60px',
-      borderRadius: '50%',
-      overflow: 'hidden',
-      border: '3px solid #007bff',
-    },
-    avatar: {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-    },
-    avatarPlaceholder: {
-      width: '100%',
-      height: '100%',
-      background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      fontSize: '24px',
-    },
-    configButton: {
-      background: 'none',
-      border: 'none',
-      fontSize: '24px',
-      color: '#666',
-      cursor: 'pointer',
-      padding: '8px',
-      borderRadius: '50%',
-      transition: 'all 0.3s ease',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '44px',
-      height: '44px',
-    },
     btnGroup: {
       display: 'flex',
       gap: '10px',
@@ -933,50 +883,150 @@ const Dashboard = ({ user, handleLogout }) => {
     },
   };
 
+  // Estilos específicos del header
+  const headerStyles = {
+    dashboardHeader: {
+      background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+      borderRadius: '12px',
+      padding: '20px 30px',
+      marginBottom: '30px',
+      boxShadow: '0 5px 20px rgba(106, 17, 203, 0.2)',
+      color: 'white',
+    },
+    headerContent: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    userInfo: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '20px',
+    },
+    avatar: {
+      width: '70px',
+      height: '70px',
+      borderRadius: '50%',
+      overflow: 'hidden',
+      border: '4px solid rgba(255, 255, 255, 0.3)',
+      background: 'rgba(255, 255, 255, 0.2)',
+    },
+    avatarPlaceholder: {
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '32px',
+    },
+    userText: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    email: {
+      fontSize: '14px',
+      color: 'rgba(255, 255, 255, 0.9)',
+      marginTop: '5px',
+      display: 'inline-block',
+      background: 'rgba(255, 255, 255, 0.1)',
+      padding: '5px 10px',
+      borderRadius: '6px',
+    },
+    logoutBtn: {
+      marginTop: '10px',
+      padding: '8px 20px',
+      background: 'rgba(255, 255, 255, 0.2)',
+      border: '2px solid rgba(255, 255, 255, 0.4)',
+      borderRadius: '8px',
+      color: 'white',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '600',
+      transition: 'all 0.3s',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px',
+      maxWidth: '150px',
+    },
+    settingsBtn: {
+      background: 'rgba(255, 255, 255, 0.2)',
+      border: '2px solid rgba(255, 255, 255, 0.4)',
+      borderRadius: '50%',
+      width: '50px',
+      height: '50px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      fontSize: '20px',
+      color: 'white',
+      transition: 'all 0.3s',
+    },
+  };
+
   return (
     <div style={dashboardStyles.container}>
-      {/* Header del dashboard */}
-      <header style={dashboardStyles.dashboardHeader}>
-        <div style={dashboardStyles.userInfo}>
-          <div style={dashboardStyles.userAvatar}>
-            {currentUser.profilePicture ? (
-              <img src={currentUser.profilePicture} alt="Usuario" style={dashboardStyles.avatar} />
-            ) : (
-              <div style={dashboardStyles.avatarPlaceholder}>
-                <span>👤</span>
-              </div>
-            )}
-          </div>
-          
-          <div>
-            <h1 style={{ margin: 0, color: '#333', fontSize: '28px' }}>Mi Gestor Seguro</h1>
-            <p style={{ margin: '5px 0 0 0', color: '#666', fontSize: '16px' }}>
-              Bienvenido, <span style={{ fontWeight: '600', color: '#333' }}>
-                {currentUser.username || currentUser.email}
+      {/* Header del dashboard con estructura solicitada */}
+      <header className="dashboard-header" style={headerStyles.dashboardHeader}>
+        <div className="header-content" style={headerStyles.headerContent}>
+          <div className="user-info" style={headerStyles.userInfo}>
+            <div className="avatar" style={headerStyles.avatar}>
+              {currentUser.profilePicture ? (
+                <img 
+                  src={currentUser.profilePicture} 
+                  alt="Usuario" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <div style={headerStyles.avatarPlaceholder}>👤</div>
+              )}
+            </div>
+
+            <div className="user-text" style={headerStyles.userText}>
+              <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
+              <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
+              <span className="email" style={headerStyles.email}>
+                {currentUser.username || user.email}
               </span>
-            </p>
+              
+              <button 
+                className="logout-btn" 
+                style={headerStyles.logoutBtn}
+                onClick={handleLogout}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <span>🚪</span> Cerrar sesión
+              </button>
+            </div>
           </div>
-        </div>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+
           <button 
-            style={dashboardStyles.configButton}
+            className="settings-btn" 
+            style={headerStyles.settingsBtn}
             onClick={() => setActiveSection('config')}
-            title="Configuración de usuario"
+            title="Configuración"
             onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#f5f5f5';
-              e.currentTarget.style.color = '#007bff';
-              e.currentTarget.style.transform = 'rotate(30deg)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+              e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = '#666';
-              e.currentTarget.style.transform = 'rotate(0deg)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+              e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
             }}
           >
-            <span>⚙️</span>
+            ⚙️
           </button>
-          <LogoutButton handleLogout={handleLogout} />
         </div>
       </header>
       

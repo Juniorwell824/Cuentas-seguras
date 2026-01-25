@@ -42,7 +42,7 @@ const Login = ({ setView }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            placeholder="tu@email.com"
+            placeholder="saultorr19@gmail.com" // Cambiado para coincidir con la imagen
           />
         </div>
         
@@ -55,7 +55,7 @@ const Login = ({ setView }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="Tu contraseña"
+            placeholder="**********" // Cambiado para coincidir con la imagen
           />
         </div>
         
