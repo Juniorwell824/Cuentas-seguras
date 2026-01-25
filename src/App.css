@@ -1880,3 +1880,124 @@ body {
     max-width: 900px;
   }
 }
+
+/* ============================================
+   AJUSTES ESPECÍFICOS PARA MÓVILES SIN DARK MODE
+   ============================================ */
+
+@media (max-width: 480px) {
+  /* Sobreescribir las reglas del modo oscuro en móviles */
+  body {
+    background: #f5f7fa !important;
+    color: var(--gray-800) !important;
+  }
+  
+  .content-section,
+  .data-card,
+  .metric-card {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+    color: var(--gray-800) !important;
+  }
+  
+  .checkbox-item {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+  }
+  
+  .user-menu {
+    background: rgba(79, 70, 229, 0.08) !important;
+  }
+  
+  .mobile-nav {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+  }
+  
+  .dashboard-title {
+    color: var(--gray-900) !important;
+    -webkit-text-fill-color: var(--gray-900) !important;
+    background: var(--gradient-primary) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+  }
+  
+  /* Asegurar que los textos sean legibles */
+  .metric-value,
+  .section-title,
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--gray-900) !important;
+  }
+  
+  p, span, div, label {
+    color: var(--gray-800) !important;
+  }
+  
+  /* Asegurar que las tarjetas mantengan sus colores claros */
+  .card,
+  .alert,
+  .form-input,
+  .table {
+    background: white !important;
+    color: var(--gray-800) !important;
+  }
+  
+  .form-input {
+    border-color: var(--gray-200) !important;
+    background: white !important;
+  }
+  
+  .table th {
+    background: var(--gray-50) !important;
+    color: var(--gray-700) !important;
+  }
+  
+  .table td {
+    color: var(--gray-700) !important;
+  }
+}
+
+/* Desactivar completamente el modo oscuro solo en móviles */
+@media (max-width: 480px) and (prefers-color-scheme: dark) {
+  /* Esto sobrescribe cualquier preferencia de modo oscuro del sistema */
+  :root {
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #f6f7fb 0%, #f1f5f9 100%) !important;
+    color: #1f2937 !important;
+  }
+}
+
+/* Opcional: Si quieres también desactivar en tablets */
+@media (max-width: 768px) {
+  /* Puedes agregar reglas similares si quieres extender a tablets */
+}
+
+/* Mantener el modo oscuro solo en desktop */
+@media (min-width: 769px) and (prefers-color-scheme: dark) {
+  body {
+    background: #0f172a;
+    color: #e2e8f0;
+  }
+  
+  .content-section,
+  .data-card,
+  .metric-card {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  
+  /* ... resto de las reglas del modo oscuro originales ... */
+}
