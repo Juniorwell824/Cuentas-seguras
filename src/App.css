@@ -2001,3 +2001,551 @@ body {
   
   /* ... resto de las reglas del modo oscuro originales ... */
 }
+
+/* ============================================
+   ELIMINACIÓN COMPLETA DEL MODO OSCURO
+   Y MEJORAS DE DISEÑO
+   ============================================ */
+
+/* 1. FORZAR MODO CLARO EN TODOS LOS DISPOSITIVOS */
+:root {
+  /* Paleta de colores principal - SIEMPRE CLARO */
+  --primary: #4f46e5;
+  --primary-light: #6366f1;
+  --primary-dark: #4338ca;
+  --secondary: #8b5cf6;
+  --accent: #ec4899;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  
+  /* Escala de grises - SIEMPRE CLARO */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  
+  /* Fondo global SIEMPRE CLARO */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  
+  /* Texto SIEMPRE OSCURO sobre fondo claro */
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-tertiary: #6b7280;
+  
+  /* Bordes SIEMPRE CLAROS */
+  --border-light: #e5e7eb;
+  --border-medium: #d1d5db;
+  
+  /* Sombras mejoradas para modo claro */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  
+  /* Gradientes vibrantes para modo claro */
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  --gradient-danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  
+  /* Bordes redondeados */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  
+  /* Transiciones suaves */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 2. REINICIAR ESTILOS Y FORZAR MODO CLARO */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html {
+  color-scheme: light only; /* Forzar solo esquema claro */
+}
+
+body {
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  font-size: 16px;
+  /* Asegurar que el fondo sea siempre claro */
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 3. MEJORAR COMPONENTES DE AUTENTICACIÓN */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: var(--gradient-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-container::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  animation: float 20s infinite linear;
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  padding: 48px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+/* 4. MEJORAR HEADER DEL DASHBOARD */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+  margin-bottom: 32px;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 5. MEJORAR TARJETAS Y CONTENEDORES */
+.metric-card,
+.content-section,
+.data-card,
+.account-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+/* 6. MEJORAR BOTONES PARA MODO CLARO */
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+  border: none;
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+  background: var(--primary-light);
+  color: white;
+  border-color: var(--primary-light);
+}
+
+/* 7. MEJORAR FORMULARIOS */
+.form-input {
+  background: white;
+  border: 2px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  background: white;
+}
+
+.form-input::placeholder {
+  color: var(--gray-400);
+}
+
+/* 8. MEJORAR TABLAS */
+.table {
+  background: white;
+  color: var(--text-primary);
+}
+
+.table th {
+  background: var(--gray-50);
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-light);
+}
+
+.table td {
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.table tbody tr:hover {
+  background-color: var(--gray-50);
+}
+
+/* 9. MEJORAR ALERTAS */
+.alert {
+  background: white;
+  border: 1px solid;
+  color: var(--text-primary);
+}
+
+.alert-success {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.2);
+  color: #065f46;
+}
+
+.alert-error {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #7f1d1d;
+}
+
+/* 10. ELIMINAR COMPLETAMENTE REGLAS DE DARK MODE */
+/* Eliminar todas las media queries relacionadas con dark mode */
+
+/* 11. RESPONSIVE MEJORADO SIN DARK MODE */
+@media (max-width: 768px) {
+  body {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  .auth-card {
+    padding: 32px 24px;
+    background: white;
+  }
+  
+  .dashboard-header {
+    padding: 16px 20px;
+    background: white;
+  }
+  
+  .content-section,
+  .metric-card,
+  .data-card {
+    background: white;
+    border-color: var(--border-light);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    background: #f8fafc !important;
+    color: #1f2937 !important;
+  }
+  
+  .auth-container {
+    background: var(--gradient-primary);
+  }
+  
+  .auth-card {
+    background: white;
+    padding: 24px 20px;
+  }
+  
+  .dashboard-header {
+    background: white;
+  }
+  
+  .content-section {
+    background: white;
+    border: 1px solid #e5e7eb;
+  }
+  
+  /* Asegurar que todo texto sea legible */
+  h1, h2, h3, h4, h5, h6 {
+    color: #111827 !important;
+  }
+  
+  p, span, div, label {
+    color: #374151 !important;
+  }
+  
+  /* Inputs siempre con fondo blanco */
+  .form-input {
+    background: white !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+  }
+  
+  /* Botones con colores vibrantes */
+  .btn-primary {
+    background: var(--gradient-primary) !important;
+    color: white !important;
+  }
+  
+  .btn-secondary {
+    background: white !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+  }
+}
+
+/* 12. MEJORAS ESPECÍFICAS DE DISEÑO */
+
+/* Efecto de elevación en hover */
+.metric-card:hover,
+.data-card:hover,
+.account-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+}
+
+/* Mejorar la legibilidad de textos */
+.auth-subtitle,
+.section-description,
+.help-text {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Mejorar los iconos */
+.metric-icon,
+.account-icon {
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--primary);
+  border-radius: var(--radius-md);
+}
+
+/* Mejorar los estados de carga */
+.loading-spinner {
+  border: 4px solid var(--gray-200);
+  border-top: 4px solid var(--primary);
+}
+
+/* 13. CENTRADO MEJORADO PARA PC */
+@media (min-width: 1024px) {
+  .dashboard-content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+  }
+  
+  .main-content {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+  }
+}
+
+/* 14. FOOTER MEJORADO */
+.dashboard-footer {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-light);
+  text-align: center;
+  padding: 24px;
+  margin-top: 48px;
+}
+
+/* 15. ANIMACIONES MEJORADAS */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 16. UTILIDADES PARA MODO CLARO */
+.text-light { color: var(--text-secondary) !important; }
+.bg-light { background: var(--bg-secondary) !important; }
+.bg-white { background: white !important; }
+.border-light { border-color: var(--border-light) !important; }
+
+/* 17. SCROLLBAR MEJORADO */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* 18. MEJORAR LA VISIBILIDAD DE ENLACES */
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* 19. MEJORAR LOS CHECKBOX Y RADIO BUTTONS */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--primary);
+}
+
+/* 20. ESTILOS PARA ESTADOS DESACTIVADOS */
+:disabled,
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 21. SOMBRAS SUAVES PARA PROFUNDIDAD */
+.card-shadow {
+  box-shadow: var(--shadow-md);
+}
+
+.card-shadow:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* 22. GRADIENTES SUAVES PARA FONDOS */
+.bg-gradient-light {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
+/* 23. MEJORAR BORDES REDONDEADOS */
+.rounded-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* 24. ESTILOS PARA CÓDIGO Y PRE-FORMATEADO */
+code, pre {
+  background: var(--gray-100);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Courier New', monospace;
+}
+
+/* 25. MEJORAS FINALES DE CONTRASTE */
+.contrast-text {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.highlight {
+  background: linear-gradient(120deg, rgba(79, 70, 229, 0.1) 0%, transparent 100%);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* 26. ELIMINAR CUALQUIER VESTIGIO DE DARK MODE */
+/* Esto sobrescribe cualquier preferencia del sistema */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Mantener los colores claros aunque el sistema prefiera oscuro */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --border-light: #e5e7eb;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #f6f7fb 0%, #f1f5f9 100%) !important;
+    color: #1f2937 !important;
+  }
+  
+  .auth-card,
+  .content-section,
+  .metric-card,
+  .data-card,
+  .account-card {
+    background: white !important;
+    color: #1f2937 !important;
+    border-color: #e5e7eb !important;
+  }
+  
+  .form-input {
+    background: white !important;
+    color: #1f2937 !important;
+    border-color: #d1d5db !important;
+  }
+  
+  .table {
+    background: white !important;
+    color: #1f2937 !important;
+  }
+  
+  .table th {
+    background: #f9fafb !important;
+    color: #4b5563 !important;
+  }
+  
+  .btn-primary {
+    background: var(--gradient-primary) !important;
+    color: white !important;
+  }
+}
