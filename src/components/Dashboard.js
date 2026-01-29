@@ -13,6 +13,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage
 const Dashboard = ({ user, handleLogout }) => {
   const [activeSection, setActiveSection] = useState('gmail');
   const [currentUser, setCurrentUser] = useState(user);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // Estado para el modal de confirmación
   
   const [userConfig, setUserConfig] = useState({
     username: '',
@@ -68,6 +69,22 @@ const Dashboard = ({ user, handleLogout }) => {
       loadUserData();
     }
   }, [user]);
+
+  // Función para confirmar logout
+  const confirmLogout = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  // Función para cancelar logout
+  const cancelLogout = () => {
+    setShowLogoutConfirm(false);
+  };
+
+  // Función para ejecutar logout después de confirmación
+  const executeLogout = () => {
+    setShowLogoutConfirm(false);
+    handleLogout();
+  };
 
   // Validación mejorada de campos
   const validateForm = () => {
@@ -855,6 +872,136 @@ const Dashboard = ({ user, handleLogout }) => {
     );
   };
 
+  // Modal de confirmación para logout
+  const LogoutConfirmModal = () => {
+    if (!showLogoutConfirm) return null;
+
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000,
+        animation: 'fadeIn 0.3s ease-in-out',
+      }}>
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          padding: '30px',
+          maxWidth: '500px',
+          width: '90%',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+          animation: 'slideIn 0.3s ease-in-out',
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '25px' }}>
+            <div style={{
+              fontSize: '60px',
+              marginBottom: '15px',
+              color: '#ff6b6b'
+            }}>
+              ❓
+            </div>
+            <h2 style={{
+              margin: 0,
+              marginBottom: '10px',
+              color: '#333',
+              fontSize: '24px',
+              fontWeight: '600'
+            }}>
+              ¿Estás seguro?
+            </h2>
+            <p style={{
+              color: '#666',
+              fontSize: '16px',
+              lineHeight: '1.5',
+              margin: 0
+            }}>
+              Estás a punto de cerrar sesión de tu cuenta.<br />
+              ¿Deseas continuar?
+            </p>
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '15px',
+            marginTop: '25px'
+          }}>
+            <button
+              onClick={cancelLogout}
+              style={{
+                padding: '12px 30px',
+                border: 'none',
+                borderRadius: '8px',
+                backgroundColor: '#6c757d',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: '500',
+                transition: 'all 0.3s',
+                flex: 1,
+                maxWidth: '150px'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#5a6268';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#6c757d';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={executeLogout}
+              style={{
+                padding: '12px 30px',
+                border: 'none',
+                borderRadius: '8px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: '500',
+                transition: 'all 0.3s',
+                flex: 1,
+                maxWidth: '150px'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#c82333';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#dc3545';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Sí, cerrar sesión
+            </button>
+          </div>
+          
+          <p style={{
+            textAlign: 'center',
+            color: '#999',
+            fontSize: '14px',
+            marginTop: '20px',
+            paddingTop: '20px',
+            borderTop: '1px solid #eee'
+          }}>
+            Tu información se guardará automáticamente
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   // Estilos principales del dashboard
   const dashboardStyles = {
     container: {
@@ -964,152 +1111,173 @@ const Dashboard = ({ user, handleLogout }) => {
     },
   };
 
+  // Agregar estilos de animación
+  const styleSheet = document.styleSheets[0];
+  styleSheet.insertRule(`
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  `, styleSheet.cssRules.length);
+  
+  styleSheet.insertRule(`
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  `, styleSheet.cssRules.length);
+
   return (
-    <div className="dashboard-layout">
-      <div className="dashboard-content-wrapper">
-        {/* Header del dashboard */}
-        <div className="dashboard-header-wrapper">
-          <header className="dashboard-header" style={headerStyles.dashboardHeader}>
-            <div className="header-content" style={headerStyles.headerContent}>
-              <div className="user-info" style={headerStyles.userInfo}>
-                <div className="avatar" style={headerStyles.avatar}>
-                  {currentUser.profilePicture ? (
-                    <img 
-                      src={currentUser.profilePicture} 
-                      alt="Usuario" 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  ) : (
-                    <div style={headerStyles.avatarPlaceholder}>👤</div>
-                  )}
+    <>
+      <div className="dashboard-layout">
+        <div className="dashboard-content-wrapper">
+          {/* Header del dashboard */}
+          <div className="dashboard-header-wrapper">
+            <header className="dashboard-header" style={headerStyles.dashboardHeader}>
+              <div className="header-content" style={headerStyles.headerContent}>
+                <div className="user-info" style={headerStyles.userInfo}>
+                  <div className="avatar" style={headerStyles.avatar}>
+                    {currentUser.profilePicture ? (
+                      <img 
+                        src={currentUser.profilePicture} 
+                        alt="Usuario" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div style={headerStyles.avatarPlaceholder}>👤</div>
+                    )}
+                  </div>
+
+                  <div className="user-text" style={headerStyles.userText}>
+                    <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
+                    <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
+                    <span className="email" style={headerStyles.email}>
+                      {currentUser.username || user.email}
+                    </span>
+                    
+                    <button 
+                      className="logout-btn" 
+                      style={headerStyles.logoutBtn}
+                      onClick={confirmLogout} // Cambiado a confirmLogout
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      <span>🚪</span> Cerrar sesión
+                    </button>
+                  </div>
                 </div>
 
-                <div className="user-text" style={headerStyles.userText}>
-                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
-                  <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
-                  <span className="email" style={headerStyles.email}>
-                    {currentUser.username || user.email}
-                  </span>
-                  
-                  <button 
-                    className="logout-btn" 
-                    style={headerStyles.logoutBtn}
-                    onClick={handleLogout}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
-                  >
-                    <span>🚪</span> Cerrar sesión
-                  </button>
-                </div>
+                <button 
+                  className="settings-btn" 
+                  style={headerStyles.settingsBtn}
+                  onClick={() => setActiveSection('config')}
+                  title="Configuración"
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                    e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                    e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                  }}
+                >
+                  ⚙️
+                </button>
               </div>
+            </header>
+          </div>
 
+          {/* Botones de navegación - Modificado */}
+          <div className="nav-buttons-container">
+            <div style={dashboardStyles.btnGroup} className="nav-btn-group">
               <button 
-                className="settings-btn" 
-                style={headerStyles.settingsBtn}
-                onClick={() => setActiveSection('config')}
-                title="Configuración"
+                style={{
+                  ...dashboardStyles.btn,
+                  backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
+                  color: activeSection === 'gmail' ? 'white' : '#666',
+                }}
+                onClick={() => setActiveSection('gmail')}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                  e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
+                  if (activeSection !== 'gmail') {
+                    e.currentTarget.style.backgroundColor = '#e0e0e0';
+                  }
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
-                  e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                  if (activeSection !== 'gmail') {
+                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                  }
                 }}
               >
-                ⚙️
+                <span>📧</span> Cuentas de Gmail
+              </button>
+              <button 
+                style={{
+                  ...dashboardStyles.btn,
+                  backgroundColor: activeSection === 'other' ? '#007bff' : '#f5f5f5',
+                  color: activeSection === 'other' ? 'white' : '#666',
+                }}
+                onClick={() => setActiveSection('other')}
+                onMouseOver={(e) => {
+                  if (activeSection !== 'other') {
+                    e.currentTarget.style.backgroundColor = '#e0e0e0';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (activeSection !== 'other') {
+                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                  }
+                }}
+              >
+                <span>👥</span> Otras Cuentas
+              </button>
+              <button 
+                style={{
+                  ...dashboardStyles.btn,
+                  backgroundColor: activeSection === 'bank' ? '#007bff' : '#f5f5f5',
+                  color: activeSection === 'bank' ? 'white' : '#666',
+                }}
+                onClick={() => setActiveSection('bank')}
+                onMouseOver={(e) => {
+                  if (activeSection !== 'bank') {
+                    e.currentTarget.style.backgroundColor = '#e0e0e0';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (activeSection !== 'bank') {
+                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                  }
+                }}
+              >
+                <span>🏦</span> Datos Bancarios
               </button>
             </div>
-          </header>
-        </div>
-
-        {/* Botones de navegación - Modificado */}
-        <div className="nav-buttons-container">
-          <div style={dashboardStyles.btnGroup} className="nav-btn-group">
-            <button 
-              style={{
-                ...dashboardStyles.btn,
-                backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
-                color: activeSection === 'gmail' ? 'white' : '#666',
-              }}
-              onClick={() => setActiveSection('gmail')}
-              onMouseOver={(e) => {
-                if (activeSection !== 'gmail') {
-                  e.currentTarget.style.backgroundColor = '#e0e0e0';
-                }
-              }}
-              onMouseOut={(e) => {
-                if (activeSection !== 'gmail') {
-                  e.currentTarget.style.backgroundColor = '#f5f5f5';
-                }
-              }}
-            >
-              <span>📧</span> Cuentas de Gmail
-            </button>
-            <button 
-              style={{
-                ...dashboardStyles.btn,
-                backgroundColor: activeSection === 'other' ? '#007bff' : '#f5f5f5',
-                color: activeSection === 'other' ? 'white' : '#666',
-              }}
-              onClick={() => setActiveSection('other')}
-              onMouseOver={(e) => {
-                if (activeSection !== 'other') {
-                  e.currentTarget.style.backgroundColor = '#e0e0e0';
-                }
-              }}
-              onMouseOut={(e) => {
-                if (activeSection !== 'other') {
-                  e.currentTarget.style.backgroundColor = '#f5f5f5';
-                }
-              }}
-            >
-              <span>👥</span> Otras Cuentas
-            </button>
-            <button 
-              style={{
-                ...dashboardStyles.btn,
-                backgroundColor: activeSection === 'bank' ? '#007bff' : '#f5f5f5',
-                color: activeSection === 'bank' ? 'white' : '#666',
-              }}
-              onClick={() => setActiveSection('bank')}
-              onMouseOver={(e) => {
-                if (activeSection !== 'bank') {
-                  e.currentTarget.style.backgroundColor = '#e0e0e0';
-                }
-              }}
-              onMouseOut={(e) => {
-                if (activeSection !== 'bank') {
-                  e.currentTarget.style.backgroundColor = '#f5f5f5';
-                }
-              }}
-            >
-              <span>🏦</span> Datos Bancarios
-            </button>
           </div>
-        </div>
-        
-        {/* Contenido principal - Modificado */}
-        <div className="section-content-wrapper">
-          <div className="section-content" style={{ minHeight: '400px' }}>
-            {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
-            {activeSection === 'other' && <OtherAccounts user={currentUser} />}
-            {activeSection === 'bank' && <BankData user={currentUser} />}
-            {activeSection === 'config' && <UserConfigSection />}
+          
+          {/* Contenido principal - Modificado */}
+          <div className="section-content-wrapper">
+            <div className="section-content" style={{ minHeight: '400px' }}>
+              {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
+              {activeSection === 'other' && <OtherAccounts user={currentUser} />}
+              {activeSection === 'bank' && <BankData user={currentUser} />}
+              {activeSection === 'config' && <UserConfigSection />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      
+      {/* Modal de confirmación para logout */}
+      <LogoutConfirmModal />
+    </>
   );
 };
 

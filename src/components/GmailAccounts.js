@@ -10,6 +10,7 @@ import {
   updateDoc 
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import useEncryption from '../hooks/useEncryption';
 
 const GmailAccounts = ({ user }) => {
   const [accounts, setAccounts] = useState([]);
@@ -21,6 +22,7 @@ const GmailAccounts = ({ user }) => {
   const [message, setMessage] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const { encryptObject, decryptObject } = useEncryption(user?.uid);
 
   // Cargar cuentas de Gmail del usuario
   useEffect(() => {
@@ -37,9 +39,12 @@ const GmailAccounts = ({ user }) => {
         const loadedAccounts = [];
         
         querySnapshot.forEach((doc) => {
+          const accountData = doc.data();
+          // Desencriptar los campos sensibles al cargar
+          const decryptedAccount = decryptObject(accountData, ['username', 'password']);
           loadedAccounts.push({
             id: doc.id,
-            ...doc.data()
+            ...decryptedAccount
           });
         });
         
@@ -51,7 +56,7 @@ const GmailAccounts = ({ user }) => {
     };
     
     loadAccounts();
-  }, [user]);
+  }, [user, decryptObject]);
 
   const handleAddAccount = async (e) => {
     e.preventDefault();
@@ -65,29 +70,31 @@ const GmailAccounts = ({ user }) => {
     setMessage('');
     
     try {
+      // Crear objeto con los datos
+      const accountData = {
+        userId: user.uid,
+        username,
+        password,
+        ...(isEditing && editingId ? { updatedAt: new Date() } : { createdAt: new Date() })
+      };
+      
+      // Encriptar los campos sensibles antes de enviar a Firebase
+      const encryptedAccountData = encryptObject(accountData, ['username', 'password']);
+      
       if (isEditing && editingId) {
         // Modo edición: actualizar documento existente
         const accountRef = doc(db, 'gmailAccounts', editingId);
-        await updateDoc(accountRef, {
-          username,
-          password,
-          updatedAt: new Date()
-        });
+        await updateDoc(accountRef, encryptedAccountData);
         
-        setMessage('Cuenta actualizada exitosamente');
+        setMessage('Cuenta actualizada y encriptada exitosamente');
       } else {
         // Modo creación: agregar nuevo documento
-        await addDoc(collection(db, 'gmailAccounts'), {
-          userId: user.uid,
-          username,
-          password,
-          createdAt: new Date()
-        });
+        await addDoc(collection(db, 'gmailAccounts'), encryptedAccountData);
         
-        setMessage('Cuenta de Gmail guardada exitosamente');
+        setMessage('Cuenta de Gmail guardada y encriptada exitosamente');
       }
       
-      // Actualizar la lista
+      // Recargar las cuentas desde Firebase
       const q = query(
         collection(db, 'gmailAccounts'),
         where('userId', '==', user.uid)
@@ -97,9 +104,11 @@ const GmailAccounts = ({ user }) => {
       const updatedAccounts = [];
       
       querySnapshot.forEach((doc) => {
+        const accountData = doc.data();
+        const decryptedAccount = decryptObject(accountData, ['username', 'password']);
         updatedAccounts.push({
           id: doc.id,
-          ...doc.data()
+          ...decryptedAccount
         });
       });
       
@@ -176,6 +185,7 @@ const GmailAccounts = ({ user }) => {
     setPassword('');
     setEditingId(null);
     setIsEditing(false);
+    setShowPassword(false);
   };
 
   return (
@@ -189,8 +199,21 @@ const GmailAccounts = ({ user }) => {
       )}
       
       <div className="data-card" id="accountForm">
-        <h3>
-          {isEditing ? 'Editar Cuenta de Gmail' : 'Agregar Nueva Cuenta de Gmail'}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+          <h3 style={{ margin: 0 }}>
+            {isEditing ? 'Editar Cuenta de Gmail' : 'Agregar Nueva Cuenta de Gmail'}
+          </h3>
+          <span style={{
+            marginLeft: '10px',
+            backgroundColor: '#48bb78',
+            color: 'white',
+            padding: '3px 8px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: 'bold'
+          }}>
+            ENCRIPTADO
+          </span>
           {isEditing && (
             <button
               type="button"
@@ -201,7 +224,13 @@ const GmailAccounts = ({ user }) => {
               Cancelar Edición
             </button>
           )}
-        </h3>
+        </div>
+        <p style={{ color: '#666', fontSize: '14px', marginBottom: '15px' }}>
+          {isEditing 
+            ? 'Los datos actualizados se encriptarán antes de guardarse'
+            : 'Todos los datos se encriptan antes de guardarse en la base de datos'
+          }
+        </p>
         <form onSubmit={handleAddAccount}>
           <div className="form-row">
             <div className="form-group">
@@ -258,31 +287,44 @@ const GmailAccounts = ({ user }) => {
             {loading ? (
               'Guardando...'
             ) : isEditing ? (
-              'Actualizar Cuenta'
+              'Actualizar Cuenta (Encriptada)'
             ) : (
-              'Guardar Cuenta'
+              'Guardar Cuenta (Encriptada)'
             )}
           </button>
         </form>
       </div>
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px', marginBottom: '15px' }}>
-        <h3 style={{ margin: 0 }}>
-          Mis Cuentas de Gmail ({accounts.length})
-        </h3>
-        {accounts.length > 0 && (
-          <button
-            type="button"
-            className="btn btn-secondary btn-small"
-            onClick={toggleAllPasswords}
-            style={{ marginLeft: '15px' }}
-          >
-            {accounts.every(account => showPasswordsList[account.id]) 
-              ? '🙈 Ocultar Todas' 
-              : '👁️ Mostrar Todas'}
-          </button>
-        )}
-      </div>
+      <div className="accounts-header-section">
+  {/* Título principal centrado */}
+  <div className="accounts-title-wrapper">
+    <h3 className="accounts-title">
+      Mis Cuentas de Gmail ({accounts.length})
+    </h3>
+  </div>
+  
+  {/* Badge "DATOS DESENCRIPTADOS" centrado */}
+  <div className="accounts-badge-wrapper">
+    <span className="security-badge decrypted-badge">
+      🔓 DATOS DESENCRIPTADOS
+    </span>
+  </div>
+  
+  {/* Botón "Mostrar Todas/Ocultar Todas" centrado */}
+  {accounts.length > 0 && (
+    <div className="accounts-toggle-wrapper">
+      <button
+        type="button"
+        className="btn btn-secondary btn-small toggle-all-btn"
+        onClick={toggleAllPasswords}
+      >
+        {accounts.every(account => showPasswordsList[account.id]) 
+          ? '🙈 Ocultar Todas las Contraseñas' 
+          : '👁️ Mostrar Todas las Contraseñas'}
+      </button>
+    </div>
+  )}
+</div>
       
       {accounts.length === 0 ? (
         <div className="data-card">
@@ -294,19 +336,32 @@ const GmailAccounts = ({ user }) => {
         <div className="data-grid">
           {accounts.map((account) => (
             <div key={account.id} className="data-card">
-              <h4>
-                {account.username}
-                {editingId === account.id && (
-                  <span style={{ 
-                    marginLeft: '10px', 
-                    fontSize: '12px', 
-                    color: '#38a169',
-                    fontWeight: 'normal'
-                  }}>
-                    (Editando)
-                  </span>
-                )}
-              </h4>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                <h4 style={{ margin: 0 }}>
+                  {account.username}
+                  {editingId === account.id && (
+                    <span style={{ 
+                      marginLeft: '10px', 
+                      fontSize: '12px', 
+                      color: '#38a169',
+                      fontWeight: 'normal'
+                    }}>
+                      (Editando)
+                    </span>
+                  )}
+                </h4>
+                <span style={{
+                  marginLeft: '10px',
+                  backgroundColor: '#ed8936',
+                  color: 'white',
+                  padding: '2px 6px',
+                  borderRadius: '10px',
+                  fontSize: '10px',
+                  fontWeight: 'bold'
+                }}>
+                  SEGURO
+                </span>
+              </div>
               <div style={{ position: 'relative', marginBottom: '10px' }}>
                 <p style={{ margin: 0 }}>
                   <strong>Contraseña:</strong>{' '}
@@ -338,12 +393,18 @@ const GmailAccounts = ({ user }) => {
               </div>
               <p>
                 <strong>Agregado:</strong>{' '}
-                {account.createdAt?.toDate().toLocaleDateString()}
+                {account.createdAt?.toDate ? 
+                  account.createdAt.toDate().toLocaleDateString() : 
+                  'Fecha no disponible'
+                }
               </p>
               {account.updatedAt && (
                 <p>
                   <strong>Actualizado:</strong>{' '}
-                  {account.updatedAt?.toDate().toLocaleDateString()}
+                  {account.updatedAt?.toDate ? 
+                    account.updatedAt.toDate().toLocaleDateString() : 
+                    'Fecha no disponible'
+                  }
                 </p>
               )}
               <div className="btn-group">

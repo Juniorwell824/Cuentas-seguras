@@ -10,6 +10,7 @@ import {
   updateDoc 
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import useEncryption from '../hooks/useEncryption';
 
 const OtherAccounts = ({ user }) => {
   const [accounts, setAccounts] = useState([]);
@@ -22,6 +23,7 @@ const OtherAccounts = ({ user }) => {
   const [message, setMessage] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const { encryptObject, decryptObject } = useEncryption(user?.uid);
 
   // Cargar otras cuentas del usuario
   useEffect(() => {
@@ -38,9 +40,14 @@ const OtherAccounts = ({ user }) => {
         const loadedAccounts = [];
         
         querySnapshot.forEach((doc) => {
+          const accountData = doc.data();
+          // Desencriptar los campos sensibles al cargar
+          const decryptedAccount = decryptObject(accountData, ['platform', 'username', 'password']);
           loadedAccounts.push({
             id: doc.id,
-            ...doc.data()
+            ...decryptedAccount,
+            createdAt: accountData.createdAt, // Mantener fecha original
+            updatedAt: accountData.updatedAt // Mantener fecha original
           });
         });
         
@@ -52,7 +59,7 @@ const OtherAccounts = ({ user }) => {
     };
     
     loadAccounts();
-  }, [user]);
+  }, [user, decryptObject]);
 
   const handleAddAccount = async (e) => {
     e.preventDefault();
@@ -66,28 +73,40 @@ const OtherAccounts = ({ user }) => {
     setMessage('');
     
     try {
+      let accountData;
+      
       if (isEditing && editingId) {
         // Modo edición: actualizar documento existente
-        const accountRef = doc(db, 'otherAccounts', editingId);
-        await updateDoc(accountRef, {
+        accountData = {
           platform,
           username,
           password,
           updatedAt: new Date()
-        });
+        };
         
-        setMessage('Cuenta actualizada exitosamente');
+        // Encriptar los campos sensibles antes de actualizar
+        const encryptedAccountData = encryptObject(accountData, ['platform', 'username', 'password']);
+        
+        const accountRef = doc(db, 'otherAccounts', editingId);
+        await updateDoc(accountRef, encryptedAccountData);
+        
+        setMessage('Cuenta actualizada y encriptada exitosamente');
       } else {
         // Modo creación: agregar nuevo documento
-        await addDoc(collection(db, 'otherAccounts'), {
+        accountData = {
           userId: user.uid,
           platform,
           username,
           password,
           createdAt: new Date()
-        });
+        };
         
-        setMessage('Cuenta guardada exitosamente');
+        // Encriptar los campos sensibles antes de enviar a Firebase
+        const encryptedAccountData = encryptObject(accountData, ['platform', 'username', 'password']);
+        
+        await addDoc(collection(db, 'otherAccounts'), encryptedAccountData);
+        
+        setMessage('Cuenta guardada y encriptada exitosamente');
       }
       
       // Actualizar la lista
@@ -100,9 +119,13 @@ const OtherAccounts = ({ user }) => {
       const updatedAccounts = [];
       
       querySnapshot.forEach((doc) => {
+        const accountData = doc.data();
+        const decryptedAccount = decryptObject(accountData, ['platform', 'username', 'password']);
         updatedAccounts.push({
           id: doc.id,
-          ...doc.data()
+          ...decryptedAccount,
+          createdAt: accountData.createdAt,
+          updatedAt: accountData.updatedAt
         });
       });
       
@@ -194,8 +217,21 @@ const OtherAccounts = ({ user }) => {
       )}
       
       <div className="data-card" id="otherAccountsForm">
-        <h3>
-          {isEditing ? 'Editar Cuenta' : 'Agregar Nueva Cuenta'}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+          <h3 style={{ margin: 0 }}>
+            {isEditing ? 'Editar Cuenta' : 'Agregar Nueva Cuenta'}
+          </h3>
+          <span style={{
+            marginLeft: '10px',
+            backgroundColor: '#48bb78',
+            color: 'white',
+            padding: '3px 8px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: 'bold'
+          }}>
+            ENCRIPTADO
+          </span>
           {isEditing && (
             <button
               type="button"
@@ -206,7 +242,13 @@ const OtherAccounts = ({ user }) => {
               Cancelar Edición
             </button>
           )}
-        </h3>
+        </div>
+        <p style={{ color: '#666', fontSize: '14px', marginBottom: '15px' }}>
+          {isEditing 
+            ? 'Los datos se actualizarán y volverán a encriptar con AES-256'
+            : 'Todos los datos se encriptan con AES-256 antes de guardarse'
+          }
+        </p>
         <form onSubmit={handleAddAccount}>
           <div className="form-row">
             <div className="form-group">
@@ -276,18 +318,31 @@ const OtherAccounts = ({ user }) => {
             {loading ? (
               'Guardando...'
             ) : isEditing ? (
-              'Actualizar Cuenta'
+              'Actualizar Cuenta (Encriptar)'
             ) : (
-              'Guardar Cuenta'
+              'Guardar Cuenta (Encriptar)'
             )}
           </button>
         </form>
       </div>
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px', marginBottom: '15px' }}>
-        <h3 style={{ margin: 0 }}>
-          Mis Cuentas ({accounts.length})
-        </h3>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <h3 style={{ margin: 0 }}>
+            Mis Cuentas ({accounts.length})
+          </h3>
+          <span style={{
+            marginLeft: '10px',
+            backgroundColor: '#667eea',
+            color: 'white',
+            padding: '3px 8px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: 'bold'
+          }}>
+            DATOS DESENCRIPTADOS
+          </span>
+        </div>
         {accounts.length > 0 && (
           <button
             type="button"
@@ -312,19 +367,33 @@ const OtherAccounts = ({ user }) => {
         <div className="data-grid">
           {accounts.map((account) => (
             <div key={account.id} className="data-card">
-              <h4>
-                {account.platform}
-                {editingId === account.id && (
-                  <span style={{ 
-                    marginLeft: '10px', 
-                    fontSize: '12px', 
-                    color: '#38a169',
-                    fontWeight: 'normal'
-                  }}>
-                    (Editando)
-                  </span>
-                )}
-              </h4>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                <h4 style={{ margin: 0 }}>
+                  {account.platform}
+                  {editingId === account.id && (
+                    <span style={{ 
+                      marginLeft: '10px', 
+                      fontSize: '12px', 
+                      color: '#38a169',
+                      fontWeight: 'normal'
+                    }}>
+                      (Editando)
+                    </span>
+                  )}
+                </h4>
+                <span style={{
+                  marginLeft: '10px',
+                  backgroundColor: '#ed8936',
+                  color: 'white',
+                  padding: '2px 6px',
+                  borderRadius: '10px',
+                  fontSize: '10px',
+                  fontWeight: 'bold'
+                }}>
+                  SEGURO
+                </span>
+              </div>
+              
               <p><strong>Usuario:</strong> {account.username}</p>
               
               <div style={{ position: 'relative', marginBottom: '10px' }}>
@@ -359,14 +428,15 @@ const OtherAccounts = ({ user }) => {
               
               <p>
                 <strong>Agregado:</strong>{' '}
-                {account.createdAt?.toDate().toLocaleDateString()}
+                {account.createdAt?.toDate ? account.createdAt.toDate().toLocaleDateString() : 'Fecha no disponible'}
               </p>
               {account.updatedAt && (
                 <p>
                   <strong>Actualizado:</strong>{' '}
-                  {account.updatedAt?.toDate().toLocaleDateString()}
+                  {account.updatedAt?.toDate ? account.updatedAt.toDate().toLocaleDateString() : 'Fecha no disponible'}
                 </p>
               )}
+              
               <div className="btn-group">
                 <button
                   className="btn btn-primary btn-small"

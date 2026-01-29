@@ -2549,3 +2549,292 @@ code, pre {
     color: white !important;
   }
 }
+
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: #38a169;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.security-badge::before {
+  content: "🔒";
+  margin-right: 5px;
+}
+
+.encryption-info {
+  background-color: #e6fffa;
+  border-left: 4px solid #38b2ac;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #234e52;
+}
+
+.data-card.encrypted {
+  border: 2px solid #38b2ac;
+  position: relative;
+}
+
+.data-card.encrypted::before {
+  content: "ENCRIPTADO";
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background-color: #38b2ac;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* ============================================
+   ESTILOS PARA EL ENCABEZADO DE CUENTAS
+   ============================================ */
+
+.accounts-header-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  gap: 15px;
+  text-align: center;
+}
+
+.accounts-title-wrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.accounts-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gray-900);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--primary-light);
+}
+
+.accounts-badge-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.security-badge.decrypted-badge {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-md);
+  border: 2px solid white;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(72, 187, 120, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(72, 187, 120, 0);
+  }
+}
+
+.accounts-toggle-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.toggle-all-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-all-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+/* Responsive para el encabezado */
+@media (max-width: 768px) {
+  .accounts-header-section {
+    padding: 16px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  
+  .accounts-title {
+    font-size: 20px;
+  }
+  
+  .security-badge.decrypted-badge {
+    font-size: 12px;
+    padding: 6px 16px;
+  }
+  
+  .toggle-all-btn {
+    padding: 8px 20px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .accounts-header-section {
+    padding: 14px;
+    gap: 12px;
+  }
+  
+  .accounts-title {
+    font-size: 18px;
+  }
+  
+  .security-badge.decrypted-badge {
+    font-size: 11px;
+    padding: 5px 14px;
+  }
+  
+  .toggle-all-btn {
+    font-size: 13px;
+    padding: 7px 16px;
+  }
+}
+
+/* Versión alternativa para escritorio - todo en una fila */
+@media (min-width: 1024px) {
+  .accounts-header-section {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 20px 32px;
+    gap: 20px;
+  }
+  
+  .accounts-title-wrapper {
+    width: auto;
+    text-align: left;
+  }
+  
+  .accounts-badge-wrapper {
+    width: auto;
+    justify-content: center;
+  }
+  
+  .accounts-toggle-wrapper {
+    width: auto;
+    justify-content: flex-end;
+  }
+}
+
+/* Versión para tablet - diseño intermedio */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .accounts-header-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .accounts-title-wrapper {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    text-align: center;
+  }
+  
+  .accounts-badge-wrapper {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: flex-start;
+  }
+  
+  .accounts-toggle-wrapper {
+    grid-column: 2;
+    grid-row: 2;
+    justify-content: flex-end;
+  }
+}
+
+/* Mejoras para los botones de mostrar/ocultar contraseñas */
+.password-toggle-btn {
+  background: none;
+  border: 1px solid var(--primary-light);
+  color: var(--primary);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.password-toggle-btn:hover {
+  background: var(--primary-light);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.password-toggle-btn.hide {
+  background: var(--danger-light);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.password-toggle-btn.hide:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* Añade estas variables si no existen */
+:root {
+  --danger-light: #fed7d7;
+  --primary-light: #c3dafe;
+}

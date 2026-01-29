@@ -10,6 +10,7 @@ import {
   updateDoc 
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import useEncryption from '../hooks/useEncryption';
 
 const BankData = ({ user }) => {
   const [bankAccounts, setBankAccounts] = useState([]);
@@ -24,6 +25,8 @@ const BankData = ({ user }) => {
   const [editingId, setEditingId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState({});
+  
+  const { encryptObject, decryptObject } = useEncryption(user?.uid);
 
   // Cargar datos bancarios del usuario
   useEffect(() => {
@@ -40,9 +43,14 @@ const BankData = ({ user }) => {
         const loadedAccounts = [];
         
         querySnapshot.forEach((doc) => {
+          const accountData = doc.data();
+          // Desencriptar todos los campos sensibles
+          const decryptedAccount = decryptObject(accountData, [
+            'bankName', 'firstName', 'lastName', 'idNumber', 'accountType', 'accountNumber'
+          ]);
           loadedAccounts.push({
             id: doc.id,
-            ...doc.data()
+            ...decryptedAccount
           });
         });
         
@@ -61,7 +69,7 @@ const BankData = ({ user }) => {
     };
     
     loadBankAccounts();
-  }, [user]);
+  }, [user, decryptObject]);
 
   // Función para generar el texto a compartir
   const generateShareText = (account) => {
@@ -96,10 +104,8 @@ const BankData = ({ user }) => {
     setShowShareOptions({...showShareOptions, [account.id]: false});
   };
 
-  // Función para compartir en Instagram (nota: Instagram no permite compartir texto directamente)
+  // Función para compartir en Instagram
   const shareToInstagram = (account) => {
-    // Instagram no tiene API directa para compartir texto
-    // Podemos copiar al portapapeles o mostrar un mensaje
     navigator.clipboard.writeText(generateShareText(account))
       .then(() => {
         alert('Texto copiado al portapapeles. Puedes pegarlo en Instagram.');
@@ -144,37 +150,44 @@ const BankData = ({ user }) => {
     setMessage('');
     
     try {
+      // Crear objeto con los datos
+      const accountData = {
+        userId: user.uid,
+        bankName,
+        firstName,
+        lastName,
+        idNumber,
+        accountType,
+        accountNumber,
+        createdAt: new Date()
+      };
+
       if (isEditing && editingId) {
         // Modo edición: actualizar documento existente
-        const accountRef = doc(db, 'bankData', editingId);
-        await updateDoc(accountRef, {
-          bankName,
-          firstName,
-          lastName,
-          idNumber,
-          accountType,
-          accountNumber,
-          updatedAt: new Date()
-        });
+        accountData.updatedAt = new Date();
         
-        setMessage('Datos bancarios actualizados exitosamente');
+        // Encriptar todos los campos antes de enviar a Firebase
+        const encryptedAccountData = encryptObject(accountData, [
+          'bankName', 'firstName', 'lastName', 'idNumber', 'accountType', 'accountNumber'
+        ]);
+        
+        const accountRef = doc(db, 'bankData', editingId);
+        await updateDoc(accountRef, encryptedAccountData);
+        
+        setMessage('Datos bancarios actualizados y encriptados exitosamente');
       } else {
         // Modo creación: agregar nuevo documento
-        await addDoc(collection(db, 'bankData'), {
-          userId: user.uid,
-          bankName,
-          firstName,
-          lastName,
-          idNumber,
-          accountType,
-          accountNumber,
-          createdAt: new Date()
-        });
+        // Encriptar todos los campos antes de enviar a Firebase
+        const encryptedAccountData = encryptObject(accountData, [
+          'bankName', 'firstName', 'lastName', 'idNumber', 'accountType', 'accountNumber'
+        ]);
         
-        setMessage('Datos bancarios guardados exitosamente');
+        await addDoc(collection(db, 'bankData'), encryptedAccountData);
+        
+        setMessage('Datos bancarios guardados y encriptados exitosamente');
       }
       
-      // Actualizar la lista
+      // Actualizar la lista desde Firebase
       const q = query(
         collection(db, 'bankData'),
         where('userId', '==', user.uid)
@@ -184,9 +197,13 @@ const BankData = ({ user }) => {
       const updatedAccounts = [];
       
       querySnapshot.forEach((doc) => {
+        const accountData = doc.data();
+        const decryptedAccount = decryptObject(accountData, [
+          'bankName', 'firstName', 'lastName', 'idNumber', 'accountType', 'accountNumber'
+        ]);
         updatedAccounts.push({
           id: doc.id,
-          ...doc.data()
+          ...decryptedAccount
         });
       });
       
@@ -269,7 +286,7 @@ const BankData = ({ user }) => {
     setIsEditing(false);
   };
 
-  // SVG Icons (sin necesidad de react-icons)
+  // SVG Icons para los botones de compartir
   const ShareIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
       <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
@@ -359,8 +376,21 @@ const BankData = ({ user }) => {
       )}
       
       <div className="data-card" id="bankDataForm">
-        <h3>
-          {isEditing ? 'Editar Datos Bancarios' : 'Agregar Nuevos Datos Bancarios'}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+          <h3 style={{ margin: 0 }}>
+            {isEditing ? 'Editar Datos Bancarios' : 'Agregar Nuevos Datos Bancarios'}
+          </h3>
+          <span style={{
+            marginLeft: '10px',
+            backgroundColor: isEditing ? '#38a169' : '#48bb78',
+            color: 'white',
+            padding: '3px 8px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: 'bold'
+          }}>
+            {isEditing ? 'EDITANDO' : 'ENCRIPTADO'}
+          </span>
           {isEditing && (
             <button
               type="button"
@@ -371,7 +401,15 @@ const BankData = ({ user }) => {
               Cancelar Edición
             </button>
           )}
-        </h3>
+        </div>
+        
+        <p style={{ color: '#666', fontSize: '14px', marginBottom: '15px' }}>
+          {isEditing 
+            ? 'Edita los datos bancarios. Los cambios se guardarán encriptados.'
+            : 'Todos los datos bancarios se encriptan con AES-256 para máxima seguridad'
+          }
+        </p>
+        
         <form onSubmit={handleAddBankAccount}>
           <div className="form-row">
             <div className="form-group">
@@ -468,9 +506,9 @@ const BankData = ({ user }) => {
             {loading ? (
               'Guardando...'
             ) : isEditing ? (
-              'Actualizar Datos Bancarios'
+              'Actualizar Datos (Encriptados)'
             ) : (
-              'Guardar Datos Bancarios'
+              'Guardar Datos (Encriptados)'
             )}
           </button>
         </form>
@@ -478,6 +516,17 @@ const BankData = ({ user }) => {
       
       <h3 style={{ marginTop: '30px', marginBottom: '15px' }}>
         Mis Datos Bancarios ({bankAccounts.length})
+        <span style={{
+          marginLeft: '10px',
+          backgroundColor: '#667eea',
+          color: 'white',
+          padding: '3px 8px',
+          borderRadius: '12px',
+          fontSize: '12px',
+          fontWeight: 'bold'
+        }}>
+          DATOS DESENCRIPTADOS
+        </span>
       </h3>
       
       {bankAccounts.length === 0 ? (
@@ -490,31 +539,45 @@ const BankData = ({ user }) => {
         <div className="data-grid">
           {bankAccounts.map((account) => (
             <div key={account.id} className="data-card">
-              <h4>
-                {account.bankName}
-                {editingId === account.id && (
-                  <span style={{ 
-                    marginLeft: '10px', 
-                    fontSize: '12px', 
-                    color: '#38a169',
-                    fontWeight: 'normal'
-                  }}>
-                    (Editando)
-                  </span>
-                )}
-              </h4>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                <h4 style={{ margin: 0 }}>
+                  {account.bankName}
+                  {editingId === account.id && (
+                    <span style={{ 
+                      marginLeft: '10px', 
+                      fontSize: '12px', 
+                      color: '#38a169',
+                      fontWeight: 'normal'
+                    }}>
+                      (Editando)
+                    </span>
+                  )}
+                </h4>
+                <span style={{
+                  marginLeft: '10px',
+                  backgroundColor: '#ed8936',
+                  color: 'white',
+                  padding: '2px 6px',
+                  borderRadius: '10px',
+                  fontSize: '10px',
+                  fontWeight: 'bold'
+                }}>
+                  SEGURO
+                </span>
+              </div>
+              
               <p><strong>Titular:</strong> {account.firstName} {account.lastName}</p>
               <p><strong>Cédula:</strong> {account.idNumber}</p>
               <p><strong>Tipo de cuenta:</strong> {account.accountType}</p>
               <p><strong>Número de cuenta:</strong> {account.accountNumber}</p>
               <p>
                 <strong>Agregado:</strong>{' '}
-                {account.createdAt?.toDate().toLocaleDateString()}
+                {account.createdAt?.toDate ? account.createdAt.toDate().toLocaleDateString() : 'Fecha no disponible'}
               </p>
               {account.updatedAt && (
                 <p>
                   <strong>Actualizado:</strong>{' '}
-                  {account.updatedAt?.toDate().toLocaleDateString()}
+                  {account.updatedAt?.toDate ? account.updatedAt.toDate().toLocaleDateString() : 'Fecha no disponible'}
                 </p>
               )}
               
@@ -529,7 +592,7 @@ const BankData = ({ user }) => {
                   <ShareIcon /> Compartir Datos
                 </button>
                 
-                {/* Opciones de compartir */}
+                {/* Opciones de compartir (se muestran/ocultan) */}
                 {showShareOptions[account.id] && (
                   <div style={shareOptionStyle}>
                     <button
@@ -589,12 +652,14 @@ const BankData = ({ user }) => {
                 <button
                   className="btn btn-primary btn-small"
                   onClick={() => handleEditAccount(account)}
+                  disabled={editingId === account.id}
                 >
                   {editingId === account.id ? 'Editando...' : 'Editar'}
                 </button>
                 <button
                   className="btn btn-danger btn-small"
                   onClick={() => handleDeleteBankAccount(account.id)}
+                  disabled={editingId === account.id}
                 >
                   Eliminar
                 </button>
