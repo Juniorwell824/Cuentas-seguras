@@ -2549,7 +2549,6 @@ code, pre {
     color: white !important;
   }
 }
-<<<<<<< HEAD
 
 .security-badge {
   display: inline-flex;
@@ -2839,7 +2838,6 @@ code, pre {
   --danger-light: #fed7d7;
   --primary-light: #c3dafe;
 }
-=======
 /* Estilos para alertas */
 .alert {
   padding: 12px 16px;
@@ -2950,4 +2948,3 @@ code, pre {
 .btn-danger:hover {
   background-color: #c53030;
 }
->>>>>>> dce8a4719e33e04a9b0e51df7415fe72e444173c
