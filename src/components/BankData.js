@@ -514,20 +514,35 @@ const BankData = ({ user }) => {
         </form>
       </div>
       
-      <h3 style={{ marginTop: '30px', marginBottom: '15px' }}>
-        Mis Datos Bancarios ({bankAccounts.length})
-        <span style={{
-          marginLeft: '10px',
-          backgroundColor: '#667eea',
-          color: 'white',
-          padding: '3px 8px',
-          borderRadius: '12px',
-          fontSize: '12px',
-          fontWeight: 'bold'
-        }}>
-          DATOS DESENCRIPTADOS
-        </span>
-      </h3>
+      {/* ENCABEZADO ACTUALIZADO CON EL MISMO ESTILO */}
+      <div className="accounts-header-section">
+        {/* Título principal centrado */}
+        <div className="accounts-title-wrapper">
+          <h3 className="accounts-title">
+            Mis Datos Bancarios ({bankAccounts.length})
+          </h3>
+        </div>
+        
+        {/* Badge "DATOS DESENCRIPTADOS" centrado */}
+        <div className="accounts-badge-wrapper">
+          <span className="security-badge decrypted-badge">
+            🔓 DATOS DESENCRIPTADOS
+          </span>
+        </div>
+        
+        {/* Botón "Compartir Todos" podría ir aquí si lo necesitas */}
+        {bankAccounts.length > 0 && (
+          <div className="accounts-toggle-wrapper">
+            <span style={{
+              color: '#666',
+              fontSize: '14px',
+              textAlign: 'center'
+            }}>
+              {bankAccounts.length} cuenta{bankAccounts.length !== 1 ? 's' : ''} guardada{bankAccounts.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+        )}
+      </div>
       
       {bankAccounts.length === 0 ? (
         <div className="data-card">

@@ -326,34 +326,35 @@ const OtherAccounts = ({ user }) => {
         </form>
       </div>
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px', marginBottom: '15px' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <h3 style={{ margin: 0 }}>
+      {/* ENCABEZADO ACTUALIZADO CON EL MISMO ESTILO */}
+      <div className="accounts-header-section">
+        {/* Título principal centrado */}
+        <div className="accounts-title-wrapper">
+          <h3 className="accounts-title">
             Mis Cuentas ({accounts.length})
           </h3>
-          <span style={{
-            marginLeft: '10px',
-            backgroundColor: '#667eea',
-            color: 'white',
-            padding: '3px 8px',
-            borderRadius: '12px',
-            fontSize: '12px',
-            fontWeight: 'bold'
-          }}>
-            DATOS DESENCRIPTADOS
+        </div>
+        
+        {/* Badge "DATOS DESENCRIPTADOS" centrado */}
+        <div className="accounts-badge-wrapper">
+          <span className="security-badge decrypted-badge">
+            🔓 DATOS DESENCRIPTADOS
           </span>
         </div>
+        
+        {/* Botón "Mostrar Todas/Ocultar Todas" centrado */}
         {accounts.length > 0 && (
-          <button
-            type="button"
-            className="btn btn-secondary btn-small"
-            onClick={toggleAllPasswords}
-            style={{ marginLeft: '15px' }}
-          >
-            {accounts.every(account => showPasswordsList[account.id]) 
-              ? '🙈 Ocultar Todas' 
-              : '👁️ Mostrar Todas'}
-          </button>
+          <div className="accounts-toggle-wrapper">
+            <button
+              type="button"
+              className="btn btn-secondary btn-small toggle-all-btn"
+              onClick={toggleAllPasswords}
+            >
+              {accounts.every(account => showPasswordsList[account.id]) 
+                ? '🙈 Ocultar Todas las Contraseñas' 
+                : '👁️ Mostrar Todas las Contraseñas'}
+            </button>
+          </div>
         )}
       </div>
       

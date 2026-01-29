@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import GmailAccounts from './GmailAccounts';
 import OtherAccounts from './OtherAccounts';
 import BankData from './BankData';
-import LogoutButton from './LogoutButton';
 
 // Importa Firebase (descomenta cuando tengas configurado)
 import { auth, db, storage } from './firebaseConfig';
@@ -13,7 +12,10 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage
 const Dashboard = ({ user, handleLogout }) => {
   const [activeSection, setActiveSection] = useState('gmail');
   const [currentUser, setCurrentUser] = useState(user);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // Estado para el modal de confirmación
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showTimeoutWarning, setShowTimeoutWarning] = useState(false);
+  const [timeoutCountdown, setTimeoutCountdown] = useState(60); // 60 segundos de advertencia
+  const [lastActivity, setLastActivity] = useState(Date.now());
   
   const [userConfig, setUserConfig] = useState({
     username: '',
@@ -29,6 +31,108 @@ const Dashboard = ({ user, handleLogout }) => {
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const fileInputRef = useRef(null);
+  
+  // Timeouts para el cierre automático
+  const inactivityTimeoutRef = useRef(null);
+  const warningTimeoutRef = useRef(null);
+  const countdownIntervalRef = useRef(null);
+
+  // Configurar el tiempo de inactividad (2 minutos = 120000 ms)
+  const INACTIVITY_TIMEOUT = 120000; // 2 minutos
+  const WARNING_TIME = 60000; // 1 minuto de advertencia
+
+  // Función para resetear el timer de inactividad
+  const resetInactivityTimer = () => {
+    setLastActivity(Date.now());
+    
+    // Limpiar timeouts anteriores
+    if (inactivityTimeoutRef.current) {
+      clearTimeout(inactivityTimeoutRef.current);
+    }
+    if (warningTimeoutRef.current) {
+      clearTimeout(warningTimeoutRef.current);
+    }
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+    }
+    
+    // Ocultar advertencia si está visible
+    if (showTimeoutWarning) {
+      setShowTimeoutWarning(false);
+      setTimeoutCountdown(60);
+    }
+    
+    // Configurar nuevo timeout para mostrar advertencia (1 minuto)
+    warningTimeoutRef.current = setTimeout(() => {
+      setShowTimeoutWarning(true);
+      setTimeoutCountdown(60);
+      
+      // Iniciar cuenta regresiva
+      countdownIntervalRef.current = setInterval(() => {
+        setTimeoutCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(countdownIntervalRef.current);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      
+      // Configurar timeout para logout automático después de la advertencia
+      inactivityTimeoutRef.current = setTimeout(() => {
+        handleAutoLogout();
+      }, WARNING_TIME);
+      
+    }, INACTIVITY_TIMEOUT - WARNING_TIME); // Mostrar advertencia después de 1 minuto
+  };
+
+  // Función para manejar logout automático
+  const handleAutoLogout = () => {
+    if (showTimeoutWarning) {
+      // Mostrar mensaje de timeout automático
+      alert('Tu sesión ha expirado por inactividad. Por seguridad, se ha cerrado la sesión automáticamente.');
+    }
+    handleLogout();
+  };
+
+  // Función para extender la sesión
+  const extendSession = () => {
+    resetInactivityTimer();
+  };
+
+  // Configurar event listeners para detectar actividad
+  useEffect(() => {
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    
+    const handleActivity = () => {
+      resetInactivityTimer();
+    };
+    
+    // Agregar listeners de eventos
+    activityEvents.forEach(event => {
+      window.addEventListener(event, handleActivity);
+    });
+    
+    // Iniciar el timer por primera vez
+    resetInactivityTimer();
+    
+    // Cleanup
+    return () => {
+      activityEvents.forEach(event => {
+        window.removeEventListener(event, handleActivity);
+      });
+      
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+      }
+      if (warningTimeoutRef.current) {
+        clearTimeout(warningTimeoutRef.current);
+      }
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+      }
+    };
+  }, []);
 
   // Cargar datos del usuario desde Firestore
   useEffect(() => {
@@ -495,7 +599,7 @@ const Dashboard = ({ user, handleLogout }) => {
                   <div style={{ 
                     width: '100%', 
                     height: '100%', 
-                    display: 'flex', 
+                    display: '-flex', 
                     alignItems: 'center', 
                     justifyContent: 'center', 
                     background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', 
@@ -1002,6 +1106,210 @@ const Dashboard = ({ user, handleLogout }) => {
     );
   };
 
+  // Modal de advertencia de timeout
+  const TimeoutWarningModal = () => {
+    if (!showTimeoutWarning) return null;
+
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000,
+        animation: 'fadeIn 0.3s ease-in-out',
+      }}>
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          padding: '30px',
+          maxWidth: '500px',
+          width: '90%',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
+          animation: 'slideIn 0.3s ease-in-out',
+          textAlign: 'center',
+        }}>
+          <div style={{
+            fontSize: '60px',
+            marginBottom: '20px',
+            color: '#ff9800'
+          }}>
+            ⏰
+          </div>
+          
+          <h2 style={{
+            margin: 0,
+            marginBottom: '15px',
+            color: '#333',
+            fontSize: '24px',
+            fontWeight: '600'
+          }}>
+            Sesión por expirar
+          </h2>
+          
+          <p style={{
+            color: '#666',
+            fontSize: '16px',
+            lineHeight: '1.5',
+            marginBottom: '25px'
+          }}>
+            Tu sesión se cerrará automáticamente por inactividad en:
+          </p>
+          
+          <div style={{
+            fontSize: '48px',
+            fontWeight: '700',
+            color: '#dc3545',
+            margin: '20px 0',
+            fontFamily: 'monospace',
+          }}>
+            {timeoutCountdown}s
+          </div>
+          
+          <p style={{
+            color: '#666',
+            fontSize: '14px',
+            marginBottom: '30px',
+            padding: '15px',
+            backgroundColor: '#fff3cd',
+            borderRadius: '8px',
+            border: '1px solid #ffeaa7'
+          }}>
+            ⚠️ Por seguridad, tu sesión se cerrará automáticamente después de 2 minutos de inactividad.
+          </p>
+          
+          <div style={{
+            display: 'flex',
+            gap: '15px',
+            justifyContent: 'center'
+          }}>
+            <button
+              onClick={extendSession}
+              style={{
+                padding: '15px 30px',
+                border: 'none',
+                borderRadius: '8px',
+                backgroundColor: '#28a745',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: '600',
+                transition: 'all 0.3s',
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#218838';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#28a745';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <span>↻</span> Continuar sesión
+            </button>
+            
+            <button
+              onClick={handleAutoLogout}
+              style={{
+                padding: '15px 30px',
+                border: 'none',
+                borderRadius: '8px',
+                backgroundColor: '#6c757d',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: '600',
+                transition: 'all 0.3s',
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#5a6268';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#6c757d';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <span>🚪</span> Cerrar ahora
+            </button>
+          </div>
+          
+          <p style={{
+            textAlign: 'center',
+            color: '#999',
+            fontSize: '12px',
+            marginTop: '20px',
+            paddingTop: '20px',
+            borderTop: '1px solid #eee'
+          }}>
+            Última actividad: {new Date(lastActivity).toLocaleTimeString()}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  // Agregar estilos de animación
+  useEffect(() => {
+    // Solo agregar los estilos si no existen
+    if (!document.querySelector('#dashboard-animations')) {
+      const styleTag = document.createElement('style');
+      styleTag.id = 'dashboard-animations';
+      styleTag.textContent = `
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+          from { transform: translateY(-20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulseWarning {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+        
+        .timeout-warning {
+          animation: pulseWarning 1s infinite;
+        }
+        
+        .dashboard-content-wrapper {
+          position: relative;
+          z-index: 1;
+          transition: opacity 0.3s;
+        }
+        
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 1000;
+        }
+      `;
+      document.head.appendChild(styleTag);
+    }
+  }, []);
+
   // Estilos principales del dashboard
   const dashboardStyles = {
     container: {
@@ -1111,26 +1419,43 @@ const Dashboard = ({ user, handleLogout }) => {
     },
   };
 
-  // Agregar estilos de animación
-  const styleSheet = document.styleSheets[0];
-  styleSheet.insertRule(`
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  `, styleSheet.cssRules.length);
-  
-  styleSheet.insertRule(`
-    @keyframes slideIn {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-  `, styleSheet.cssRules.length);
-
   return (
     <>
+      {/* 1. MODALES - Colocados primero para que estén encima de todo */}
+      <LogoutConfirmModal />
+      <TimeoutWarningModal />
+      
       <div className="dashboard-layout">
-        <div className="dashboard-content-wrapper">
+        {/* Indicador de inactividad (solo visible cuando está cerca el timeout) */}
+        {showTimeoutWarning && (
+          <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor: '#ff9800',
+            color: 'white',
+            padding: '10px 15px',
+            borderRadius: '8px',
+            zIndex: 1500,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            animation: 'pulseWarning 1s infinite'
+          }}>
+            <span>⏰</span>
+            <span>Sesión expira en: {timeoutCountdown}s</span>
+          </div>
+        )}
+        
+        {/* 2. CONTENIDO PRINCIPAL - Con efecto de deshabilitado cuando los modales están abiertos */}
+        <div className="dashboard-content-wrapper" style={{ 
+          position: 'relative',
+          zIndex: 1,
+          pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+          opacity: (showLogoutConfirm || showTimeoutWarning) ? 0.5 : 1,
+          transition: 'opacity 0.3s'
+        }}>
           {/* Header del dashboard */}
           <div className="dashboard-header-wrapper">
             <header className="dashboard-header" style={headerStyles.dashboardHeader}>
@@ -1158,7 +1483,7 @@ const Dashboard = ({ user, handleLogout }) => {
                     <button 
                       className="logout-btn" 
                       style={headerStyles.logoutBtn}
-                      onClick={confirmLogout} // Cambiado a confirmLogout
+                      onClick={confirmLogout}
                       onMouseOver={(e) => {
                         e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
                         e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
@@ -1197,7 +1522,7 @@ const Dashboard = ({ user, handleLogout }) => {
             </header>
           </div>
 
-          {/* Botones de navegación - Modificado */}
+          {/* Botones de navegación */}
           <div className="nav-buttons-container">
             <div style={dashboardStyles.btnGroup} className="nav-btn-group">
               <button 
@@ -1263,7 +1588,7 @@ const Dashboard = ({ user, handleLogout }) => {
             </div>
           </div>
           
-          {/* Contenido principal - Modificado */}
+          {/* Contenido principal */}
           <div className="section-content-wrapper">
             <div className="section-content" style={{ minHeight: '400px' }}>
               {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
@@ -1274,9 +1599,6 @@ const Dashboard = ({ user, handleLogout }) => {
           </div>
         </div>
       </div>
-      
-      {/* Modal de confirmación para logout */}
-      <LogoutConfirmModal />
     </>
   );
 };
