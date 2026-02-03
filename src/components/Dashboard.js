@@ -14,7 +14,7 @@ const Dashboard = ({ user, handleLogout }) => {
   const [currentUser, setCurrentUser] = useState(user);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showTimeoutWarning, setShowTimeoutWarning] = useState(false);
-  const [timeoutCountdown, setTimeoutCountdown] = useState(60); // 60 segundos de advertencia
+  const [timeoutCountdown, setTimeoutCountdown] = useState(60);
   const [lastActivity, setLastActivity] = useState(Date.now());
   
   const [userConfig, setUserConfig] = useState({
@@ -32,20 +32,16 @@ const Dashboard = ({ user, handleLogout }) => {
   const [initialLoad, setInitialLoad] = useState(true);
   const fileInputRef = useRef(null);
   
-  // Timeouts para el cierre automático
   const inactivityTimeoutRef = useRef(null);
   const warningTimeoutRef = useRef(null);
   const countdownIntervalRef = useRef(null);
 
-  // Configurar el tiempo de inactividad (2 minutos = 120000 ms)
-  const INACTIVITY_TIMEOUT = 120000; // 2 minutos
-  const WARNING_TIME = 60000; // 1 minuto de advertencia
+  const INACTIVITY_TIMEOUT = 120000;
+  const WARNING_TIME = 60000;
 
-  // Función para resetear el timer de inactividad
   const resetInactivityTimer = () => {
     setLastActivity(Date.now());
     
-    // Limpiar timeouts anteriores
     if (inactivityTimeoutRef.current) {
       clearTimeout(inactivityTimeoutRef.current);
     }
@@ -56,18 +52,15 @@ const Dashboard = ({ user, handleLogout }) => {
       clearInterval(countdownIntervalRef.current);
     }
     
-    // Ocultar advertencia si está visible
     if (showTimeoutWarning) {
       setShowTimeoutWarning(false);
       setTimeoutCountdown(60);
     }
     
-    // Configurar nuevo timeout para mostrar advertencia (1 minuto)
     warningTimeoutRef.current = setTimeout(() => {
       setShowTimeoutWarning(true);
       setTimeoutCountdown(60);
       
-      // Iniciar cuenta regresiva
       countdownIntervalRef.current = setInterval(() => {
         setTimeoutCountdown(prev => {
           if (prev <= 1) {
@@ -78,29 +71,24 @@ const Dashboard = ({ user, handleLogout }) => {
         });
       }, 1000);
       
-      // Configurar timeout para logout automático después de la advertencia
       inactivityTimeoutRef.current = setTimeout(() => {
         handleAutoLogout();
       }, WARNING_TIME);
       
-    }, INACTIVITY_TIMEOUT - WARNING_TIME); // Mostrar advertencia después de 1 minuto
+    }, INACTIVITY_TIMEOUT - WARNING_TIME);
   };
 
-  // Función para manejar logout automático
   const handleAutoLogout = () => {
     if (showTimeoutWarning) {
-      // Mostrar mensaje de timeout automático
       alert('Tu sesión ha expirado por inactividad. Por seguridad, se ha cerrado la sesión automáticamente.');
     }
     handleLogout();
   };
 
-  // Función para extender la sesión
   const extendSession = () => {
     resetInactivityTimer();
   };
 
-  // Configurar event listeners para detectar actividad
   useEffect(() => {
     const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
     
@@ -108,15 +96,12 @@ const Dashboard = ({ user, handleLogout }) => {
       resetInactivityTimer();
     };
     
-    // Agregar listeners de eventos
     activityEvents.forEach(event => {
       window.addEventListener(event, handleActivity);
     });
     
-    // Iniciar el timer por primera vez
     resetInactivityTimer();
     
-    // Cleanup
     return () => {
       activityEvents.forEach(event => {
         window.removeEventListener(event, handleActivity);
@@ -134,7 +119,6 @@ const Dashboard = ({ user, handleLogout }) => {
     };
   }, []);
 
-  // Cargar datos del usuario desde Firestore
   useEffect(() => {
     const loadUserData = async () => {
       try {
@@ -154,7 +138,6 @@ const Dashboard = ({ user, handleLogout }) => {
             profilePicture: userData.profilePicture || null
           }));
         } else {
-          // Crear documento del usuario si no existe
           await setDoc(userRef, {
             email: user.email,
             username: '',
@@ -174,27 +157,22 @@ const Dashboard = ({ user, handleLogout }) => {
     }
   }, [user]);
 
-  // Función para confirmar logout
   const confirmLogout = () => {
     setShowLogoutConfirm(true);
   };
 
-  // Función para cancelar logout
   const cancelLogout = () => {
     setShowLogoutConfirm(false);
   };
 
-  // Función para ejecutar logout después de confirmación
   const executeLogout = () => {
     setShowLogoutConfirm(false);
     handleLogout();
   };
 
-  // Validación mejorada de campos
   const validateForm = () => {
     const newErrors = {};
     
-    // Validación de nombre de usuario
     if (userConfig.username.trim().length < 3) {
       newErrors.username = 'El nombre debe tener al menos 3 caracteres.';
     }
@@ -203,14 +181,12 @@ const Dashboard = ({ user, handleLogout }) => {
       newErrors.username = 'El nombre no puede exceder 30 caracteres.';
     }
     
-    // Validación solo si se quiere cambiar la contraseña
     if (userConfig.newPassword || userConfig.currentPassword || userConfig.confirmPassword) {
       if (userConfig.newPassword) {
         if (userConfig.newPassword.length < 8) {
           newErrors.newPassword = 'La contraseña debe tener al menos 8 caracteres.';
         }
         
-        // Validar fortaleza de contraseña
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(userConfig.newPassword)) {
           newErrors.newPassword = 'La contraseña debe contener mayúsculas, minúsculas, números y símbolos.';
@@ -240,7 +216,6 @@ const Dashboard = ({ user, handleLogout }) => {
   const handleConfigChange = (e) => {
     const { name, value } = e.target;
     
-    // Validación en tiempo real
     let error = '';
     
     if (name === 'username') {
@@ -280,7 +255,6 @@ const Dashboard = ({ user, handleLogout }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validar tipo de archivo
       const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
       if (!validTypes.includes(file.type)) {
         setErrors({
@@ -290,7 +264,6 @@ const Dashboard = ({ user, handleLogout }) => {
         return;
       }
       
-      // Validar tamaño
       if (file.size > 5 * 1024 * 1024) {
         setErrors({
           ...errors,
@@ -299,7 +272,6 @@ const Dashboard = ({ user, handleLogout }) => {
         return;
       }
       
-      // Crear preview local
       const imageUrl = URL.createObjectURL(file);
       
       setUserConfig({
@@ -328,12 +300,10 @@ const Dashboard = ({ user, handleLogout }) => {
     });
   };
 
-  // Subir imagen a Firebase Storage
   const uploadProfilePicture = async (file, userId) => {
     if (!file) return null;
     
     try {
-      // Eliminar imagen anterior si existe
       if (currentUser.profilePicture && currentUser.profilePicture.includes('firebasestorage')) {
         try {
           const oldImageRef = ref(storage, currentUser.profilePicture);
@@ -343,15 +313,12 @@ const Dashboard = ({ user, handleLogout }) => {
         }
       }
       
-      // Crear referencia única
       const timestamp = Date.now();
       const fileName = `profile_${timestamp}_${file.name}`;
       const storageRef = ref(storage, `profile-pictures/${userId}/${fileName}`);
       
-      // Subir archivo
       await uploadBytes(storageRef, file);
       
-      // Obtener URL permanente
       const downloadURL = await getDownloadURL(storageRef);
       return downloadURL;
     } catch (error) {
@@ -360,12 +327,10 @@ const Dashboard = ({ user, handleLogout }) => {
     }
   };
 
-  // Actualizar perfil en Firebase
   const updateUserProfile = async (userId, updates) => {
     try {
       const userRef = doc(db, 'users', userId);
       
-      // Preparar datos para Firestore
       const firestoreUpdates = {};
       if (updates.username !== undefined) {
         firestoreUpdates.username = updates.username;
@@ -374,10 +339,8 @@ const Dashboard = ({ user, handleLogout }) => {
         firestoreUpdates.profilePicture = updates.profilePicture;
       }
       
-      // Actualizar Firestore
       await updateDoc(userRef, firestoreUpdates);
       
-      // Actualizar Firebase Auth (displayName y photoURL)
       const currentAuthUser = auth.currentUser;
       if (currentAuthUser) {
         await updateProfile(currentAuthUser, {
@@ -393,16 +356,13 @@ const Dashboard = ({ user, handleLogout }) => {
     }
   };
 
-  // Cambiar contraseña
   const changePassword = async (currentPassword, newPassword) => {
     try {
       const user = auth.currentUser;
       
-      // Reautenticar usuario
       const credential = EmailAuthProvider.credential(user.email, currentPassword);
       await reauthenticateWithCredential(user, credential);
       
-      // Cambiar contraseña
       await updatePassword(user, newPassword);
       return true;
     } catch (error) {
@@ -429,18 +389,15 @@ const Dashboard = ({ user, handleLogout }) => {
       const updates = {};
       let passwordChanged = false;
       
-      // 1. Subir imagen si hay una nueva
       if (userConfig.profilePictureFile) {
         const imageUrl = await uploadProfilePicture(userConfig.profilePictureFile, user.uid);
         if (imageUrl) {
           updates.profilePicture = imageUrl;
-          // Limpiar URL temporal
           if (userConfig.profilePicture && userConfig.profilePicture.startsWith('blob:')) {
             URL.revokeObjectURL(userConfig.profilePicture);
           }
         }
       } else if (userConfig.removePicture && currentUser.profilePicture) {
-        // Eliminar imagen existente
         updates.profilePicture = null;
         if (currentUser.profilePicture.includes('firebasestorage')) {
           const oldImageRef = ref(storage, currentUser.profilePicture);
@@ -448,32 +405,26 @@ const Dashboard = ({ user, handleLogout }) => {
         }
       }
       
-      // 2. Actualizar nombre de usuario si cambió
       if (userConfig.username !== currentUser.username) {
         updates.username = userConfig.username.trim();
       }
       
-      // 3. Actualizar en Firebase
       if (Object.keys(updates).length > 0) {
         await updateUserProfile(user.uid, updates);
-        // Actualizar estado local
         setCurrentUser(prev => ({ ...prev, ...updates }));
       }
       
-      // 4. Cambiar contraseña si se solicitó
       if (userConfig.newPassword && userConfig.currentPassword) {
         await changePassword(userConfig.currentPassword, userConfig.newPassword);
         passwordChanged = true;
       }
       
-      // Mostrar mensaje de éxito
       let message = 'Configuración actualizada correctamente.';
       if (passwordChanged) {
         message += ' La contraseña ha sido cambiada.';
       }
       setSuccessMessage(message);
       
-      // Resetear campos
       setUserConfig(prev => ({
         ...prev,
         currentPassword: '',
@@ -493,7 +444,6 @@ const Dashboard = ({ user, handleLogout }) => {
     }
   };
 
-  // Componente de configuración
   const UserConfigSection = () => {
     if (initialLoad) {
       return (
@@ -563,7 +513,6 @@ const Dashboard = ({ user, handleLogout }) => {
             </div>
           )}
           
-          {/* Foto de perfil */}
           <div style={{ 
             marginBottom: '30px', 
             paddingBottom: '30px', 
@@ -599,7 +548,7 @@ const Dashboard = ({ user, handleLogout }) => {
                   <div style={{ 
                     width: '100%', 
                     height: '100%', 
-                    display: '-flex', 
+                    display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center', 
                     background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', 
@@ -700,7 +649,6 @@ const Dashboard = ({ user, handleLogout }) => {
             </div>
           </div>
           
-          {/* Campo de nombre de usuario */}
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column', 
@@ -741,7 +689,6 @@ const Dashboard = ({ user, handleLogout }) => {
             </p>
           </div>
           
-          {/* Campo de email (deshabilitado) */}
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column', 
@@ -775,7 +722,6 @@ const Dashboard = ({ user, handleLogout }) => {
             </p>
           </div>
           
-          {/* Sección de cambio de contraseña */}
           <div style={{ 
             marginTop: '20px', 
             paddingTop: '20px', 
@@ -798,7 +744,6 @@ const Dashboard = ({ user, handleLogout }) => {
               🔒 Deja estos campos vacíos si no quieres cambiar la contraseña.
             </p>
             
-            {/* Contraseña actual */}
             <div style={{ 
               display: 'flex', 
               flexDirection: 'column', 
@@ -833,7 +778,6 @@ const Dashboard = ({ user, handleLogout }) => {
               )}
             </div>
             
-            {/* Nueva contraseña */}
             <div style={{ 
               display: 'flex', 
               flexDirection: 'column', 
@@ -873,7 +817,6 @@ const Dashboard = ({ user, handleLogout }) => {
               )}
             </div>
             
-            {/* Confirmar contraseña */}
             <div style={{ 
               display: 'flex', 
               flexDirection: 'column', 
@@ -914,7 +857,6 @@ const Dashboard = ({ user, handleLogout }) => {
             </div>
           </div>
           
-          {/* Botones de acción */}
           <div style={{ 
             display: 'flex', 
             justifyContent: 'flex-end', 
@@ -976,7 +918,6 @@ const Dashboard = ({ user, handleLogout }) => {
     );
   };
 
-  // Modal de confirmación para logout
   const LogoutConfirmModal = () => {
     if (!showLogoutConfirm) return null;
 
@@ -992,7 +933,6 @@ const Dashboard = ({ user, handleLogout }) => {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
-        animation: 'fadeIn 0.3s ease-in-out',
       }}>
         <div style={{
           background: 'white',
@@ -1001,7 +941,6 @@ const Dashboard = ({ user, handleLogout }) => {
           maxWidth: '500px',
           width: '90%',
           boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
-          animation: 'slideIn 0.3s ease-in-out',
         }}>
           <div style={{ textAlign: 'center', marginBottom: '25px' }}>
             <div style={{
@@ -1106,7 +1045,6 @@ const Dashboard = ({ user, handleLogout }) => {
     );
   };
 
-  // Modal de advertencia de timeout
   const TimeoutWarningModal = () => {
     if (!showTimeoutWarning) return null;
 
@@ -1122,7 +1060,6 @@ const Dashboard = ({ user, handleLogout }) => {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
-        animation: 'fadeIn 0.3s ease-in-out',
       }}>
         <div style={{
           background: 'white',
@@ -1131,7 +1068,6 @@ const Dashboard = ({ user, handleLogout }) => {
           maxWidth: '500px',
           width: '90%',
           boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
-          animation: 'slideIn 0.3s ease-in-out',
           textAlign: 'center',
         }}>
           <div style={{
@@ -1264,9 +1200,7 @@ const Dashboard = ({ user, handleLogout }) => {
     );
   };
 
-  // Agregar estilos de animación
   useEffect(() => {
-    // Solo agregar los estilos si no existen
     if (!document.querySelector('#dashboard-animations')) {
       const styleTag = document.createElement('style');
       styleTag.id = 'dashboard-animations';
@@ -1286,31 +1220,11 @@ const Dashboard = ({ user, handleLogout }) => {
           50% { transform: scale(1.05); }
           100% { transform: scale(1); }
         }
-        
-        .timeout-warning {
-          animation: pulseWarning 1s infinite;
-        }
-        
-        .dashboard-content-wrapper {
-          position: relative;
-          z-index: 1;
-          transition: opacity 0.3s;
-        }
-        
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 1000;
-        }
       `;
       document.head.appendChild(styleTag);
     }
   }, []);
 
-  // Estilos principales del dashboard
   const dashboardStyles = {
     container: {
       maxWidth: '1200px',
@@ -1338,7 +1252,6 @@ const Dashboard = ({ user, handleLogout }) => {
     },
   };
 
-  // Estilos específicos del header
   const headerStyles = {
     dashboardHeader: {
       background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
@@ -1419,173 +1332,200 @@ const Dashboard = ({ user, handleLogout }) => {
     },
   };
 
-// Reemplaza la sección del return principal con este código:
-
-return (
-  <>
-    {/* 1. MODALES - Colocados primero para que estén encima de todo */}
-    <LogoutConfirmModal />
-    <TimeoutWarningModal />
-    
-    <div className="dashboard-layout">
-      {/* Indicador de inactividad (solo visible cuando está cerca el timeout) */}
-      {showTimeoutWarning && (
-        <div style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          backgroundColor: '#ff9800',
-          color: 'white',
-          padding: '10px 15px',
-          borderRadius: '8px',
-          zIndex: 1500,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-          animation: 'pulseWarning 1s infinite'
-        }}>
-          <span>⏰</span>
-          <span>Sesión expira en: {timeoutCountdown}s</span>
-        </div>
-      )}
+  return (
+    <>
+      <LogoutConfirmModal />
+      <TimeoutWarningModal />
       
-      {/* 2. CONTENIDO PRINCIPAL - Solo se deshabilita visualmente */}
-      <div className="dashboard-content-wrapper" style={{ 
-        position: 'relative',
-        zIndex: 1,
-        // ELIMINAR: pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
-        opacity: (showLogoutConfirm || showTimeoutWarning) ? 0.5 : 1,
-        transition: 'opacity 0.3s'
-      }}>
-        {/* Header del dashboard */}
-        <div className="dashboard-header-wrapper">
-          <header className="dashboard-header" style={headerStyles.dashboardHeader}>
-            <div className="header-content" style={headerStyles.headerContent}>
-              <div className="user-info" style={headerStyles.userInfo}>
-                <div className="avatar" style={headerStyles.avatar}>
-                  {currentUser.profilePicture ? (
-                    <img 
-                      src={currentUser.profilePicture} 
-                      alt="Usuario" 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  ) : (
-                    <div style={headerStyles.avatarPlaceholder}>👤</div>
-                  )}
+      <div className="dashboard-layout">
+        {showTimeoutWarning && (
+          <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor: '#ff9800',
+            color: 'white',
+            padding: '10px 15px',
+            borderRadius: '8px',
+            zIndex: 999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          }}>
+            <span>⏰</span>
+            <span>Sesión expira en: {timeoutCountdown}s</span>
+          </div>
+        )}
+        
+        <div style={{ 
+          position: 'relative',
+          zIndex: 1,
+          opacity: (showLogoutConfirm || showTimeoutWarning) ? 0.6 : 1,
+          transition: 'opacity 0.3s'
+        }}>
+          <div className="dashboard-header-wrapper">
+            <header className="dashboard-header" style={headerStyles.dashboardHeader}>
+              <div className="header-content" style={headerStyles.headerContent}>
+                <div className="user-info" style={headerStyles.userInfo}>
+                  <div className="avatar" style={headerStyles.avatar}>
+                    {currentUser.profilePicture ? (
+                      <img 
+                        src={currentUser.profilePicture} 
+                        alt="Usuario" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div style={headerStyles.avatarPlaceholder}>👤</div>
+                    )}
+                  </div>
+
+                  <div className="user-text" style={headerStyles.userText}>
+                    <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
+                    <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
+                    <span className="email" style={headerStyles.email}>
+                      {currentUser.username || user.email}
+                    </span>
+                    
+                    <button 
+                      className="logout-btn" 
+                      style={{
+                        ...headerStyles.logoutBtn,
+                        pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+                      }}
+                      onClick={confirmLogout}
+                      onMouseOver={(e) => {
+                        if (!showLogoutConfirm && !showTimeoutWarning) {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        if (!showLogoutConfirm && !showTimeoutWarning) {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }
+                      }}
+                    >
+                      <span>🚪</span> Cerrar sesión
+                    </button>
+                  </div>
                 </div>
 
-                <div className="user-text" style={headerStyles.userText}>
-                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
-                  <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
-                  <span className="email" style={headerStyles.email}>
-                    {currentUser.username || user.email}
-                  </span>
-                  
-                  <button 
-                    className="logout-btn" 
-                    style={{
-                      ...headerStyles.logoutBtn,
-                      // Asegurar que el botón sea clickeable incluso cuando los modales estén abiertos
-                      pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
-                    }}
-                    onClick={confirmLogout}
-                    onMouseOver={(e) => {
-                      if (!showLogoutConfirm && !showTimeoutWarning) {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                      }
-                    }}
-                    onMouseOut={(e) => {
-                      if (!showLogoutConfirm && !showTimeoutWarning) {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                      }
-                    }}
-                  >
-                    <span>🚪</span> Cerrar sesión
-                  </button>
-                </div>
+                <button 
+                  className="settings-btn" 
+                  style={{
+                    ...headerStyles.settingsBtn,
+                    pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+                  }}
+                  onClick={() => setActiveSection('config')}
+                  title="Configuración"
+                  onMouseOver={(e) => {
+                    if (!showLogoutConfirm && !showTimeoutWarning) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                      e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!showLogoutConfirm && !showTimeoutWarning) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                      e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                    }
+                  }}
+                >
+                  ⚙️
+                </button>
               </div>
+            </header>
+          </div>
 
+          <div className="nav-buttons-container">
+            <div style={dashboardStyles.btnGroup} className="nav-btn-group">
               <button 
-                className="settings-btn" 
                 style={{
-                  ...headerStyles.settingsBtn,
-                  // Asegurar que el botón sea clickeable incluso cuando los modales estén abiertos
+                  ...dashboardStyles.btn,
+                  backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
+                  color: activeSection === 'gmail' ? 'white' : '#666',
                   pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
                 }}
-                onClick={() => setActiveSection('config')}
-                title="Configuración"
+                onClick={() => setActiveSection('gmail')}
                 onMouseOver={(e) => {
-                  if (!showLogoutConfirm && !showTimeoutWarning) {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                    e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
+                  if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'gmail') {
+                    e.currentTarget.style.backgroundColor = '#e0e0e0';
                   }
                 }}
                 onMouseOut={(e) => {
-                  if (!showLogoutConfirm && !showTimeoutWarning) {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
-                    e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                  if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'gmail') {
+                    e.currentTarget.style.backgroundColor = '#f5f5f5';
                   }
                 }}
               >
-                ⚙️
+                <span>📧</span> Cuentas de Gmail
+              </button>
+              <button 
+                style={{
+                  ...dashboardStyles.btn,
+                  backgroundColor: activeSection === 'other' ? '#007bff' : '#f5f5f5',
+                  color: activeSection === 'other' ? 'white' : '#666',
+                  pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+                }}
+                onClick={() => setActiveSection('other')}
+                onMouseOver={(e) => {
+                  if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'other') {
+                    e.currentTarget.style.backgroundColor = '#e0e0e0';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'other') {
+                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                  }
+                }}
+              >
+                <span>👥</span> Otras Cuentas
+              </button>
+              <button 
+                style={{
+                  ...dashboardStyles.btn,
+                  backgroundColor: activeSection === 'bank' ? '#007bff' : '#f5f5f5',
+                  color: activeSection === 'bank' ? 'white' : '#666',
+                  pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+                }}
+                onClick={() => setActiveSection('bank')}
+                onMouseOver={(e) => {
+                  if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'bank') {
+                    e.currentTarget.style.backgroundColor = '#e0e0e0';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'bank') {
+                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                  }
+                }}
+              >
+                <span>🏦</span> Datos Bancarios
               </button>
             </div>
-          </header>
-        </div>
-
-        {/* Botones de navegación */}
-        <div className="nav-buttons-container">
-          <div style={dashboardStyles.btnGroup} className="nav-btn-group">
-            <button 
-              style={{
-                ...dashboardStyles.btn,
-                backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
-                color: activeSection === 'gmail' ? 'white' : '#666',
-                // Asegurar que los botones sean clickeables
-                pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
-              }}
-              onClick={() => setActiveSection('gmail')}
-              onMouseOver={(e) => {
-                if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'gmail') {
-                  e.currentTarget.style.backgroundColor = '#e0e0e0';
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'gmail') {
-                  e.currentTarget.style.backgroundColor = '#f5f5f5';
-                }
-              }}
-            >
-              <span>📧</span> Cuentas de Gmail
-            </button>
-            {/* ... (repetir para otros botones con la misma lógica) */}
           </div>
-        </div>
-        
-        {/* Contenido principal */}
-        <div className="section-content-wrapper">
-          <div className="section-content" style={{ 
-            minHeight: '400px',
-            // Deshabilitar contenido principal cuando los modales estén abiertos
-            pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
-          }}>
-            {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
-            {activeSection === 'other' && <OtherAccounts user={currentUser} />}
-            {activeSection === 'bank' && <BankData user={currentUser} />}
-            {activeSection === 'config' && <UserConfigSection />}
+          
+          <div className="section-content-wrapper">
+            <div className="section-content" style={{ 
+              minHeight: '400px',
+              pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+            }}>
+              {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
+              {activeSection === 'other' && <OtherAccounts user={currentUser} />}
+              {activeSection === 'bank' && <BankData user={currentUser} />}
+              {activeSection === 'config' && <UserConfigSection />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </>
-);
-}; 
+    </>
+  );
+};
 
 export default Dashboard;
