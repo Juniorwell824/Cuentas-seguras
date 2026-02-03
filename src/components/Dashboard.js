@@ -1419,188 +1419,170 @@ const Dashboard = ({ user, handleLogout }) => {
     },
   };
 
-  return (
-    <>
-      {/* 1. MODALES - Colocados primero para que estén encima de todo */}
-      <LogoutConfirmModal />
-      <TimeoutWarningModal />
-      
-      <div className="dashboard-layout">
-        {/* Indicador de inactividad (solo visible cuando está cerca el timeout) */}
-        {showTimeoutWarning && (
-          <div style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            backgroundColor: '#ff9800',
-            color: 'white',
-            padding: '10px 15px',
-            borderRadius: '8px',
-            zIndex: 1500,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            animation: 'pulseWarning 1s infinite'
-          }}>
-            <span>⏰</span>
-            <span>Sesión expira en: {timeoutCountdown}s</span>
-          </div>
-        )}
-        
-        {/* 2. CONTENIDO PRINCIPAL - Con efecto de deshabilitado cuando los modales están abiertos */}
-        <div className="dashboard-content-wrapper" style={{ 
-          position: 'relative',
-          zIndex: 1,
-          pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
-          opacity: (showLogoutConfirm || showTimeoutWarning) ? 0.5 : 1,
-          transition: 'opacity 0.3s'
-        }}>
-          {/* Header del dashboard */}
-          <div className="dashboard-header-wrapper">
-            <header className="dashboard-header" style={headerStyles.dashboardHeader}>
-              <div className="header-content" style={headerStyles.headerContent}>
-                <div className="user-info" style={headerStyles.userInfo}>
-                  <div className="avatar" style={headerStyles.avatar}>
-                    {currentUser.profilePicture ? (
-                      <img 
-                        src={currentUser.profilePicture} 
-                        alt="Usuario" 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                    ) : (
-                      <div style={headerStyles.avatarPlaceholder}>👤</div>
-                    )}
-                  </div>
+// Reemplaza la sección del return principal con este código:
 
-                  <div className="user-text" style={headerStyles.userText}>
-                    <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
-                    <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
-                    <span className="email" style={headerStyles.email}>
-                      {currentUser.username || user.email}
-                    </span>
-                    
-                    <button 
-                      className="logout-btn" 
-                      style={headerStyles.logoutBtn}
-                      onClick={confirmLogout}
-                      onMouseOver={(e) => {
+return (
+  <>
+    {/* 1. MODALES - Colocados primero para que estén encima de todo */}
+    <LogoutConfirmModal />
+    <TimeoutWarningModal />
+    
+    <div className="dashboard-layout">
+      {/* Indicador de inactividad (solo visible cuando está cerca el timeout) */}
+      {showTimeoutWarning && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          backgroundColor: '#ff9800',
+          color: 'white',
+          padding: '10px 15px',
+          borderRadius: '8px',
+          zIndex: 1500,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          animation: 'pulseWarning 1s infinite'
+        }}>
+          <span>⏰</span>
+          <span>Sesión expira en: {timeoutCountdown}s</span>
+        </div>
+      )}
+      
+      {/* 2. CONTENIDO PRINCIPAL - Solo se deshabilita visualmente */}
+      <div className="dashboard-content-wrapper" style={{ 
+        position: 'relative',
+        zIndex: 1,
+        // ELIMINAR: pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+        opacity: (showLogoutConfirm || showTimeoutWarning) ? 0.5 : 1,
+        transition: 'opacity 0.3s'
+      }}>
+        {/* Header del dashboard */}
+        <div className="dashboard-header-wrapper">
+          <header className="dashboard-header" style={headerStyles.dashboardHeader}>
+            <div className="header-content" style={headerStyles.headerContent}>
+              <div className="user-info" style={headerStyles.userInfo}>
+                <div className="avatar" style={headerStyles.avatar}>
+                  {currentUser.profilePicture ? (
+                    <img 
+                      src={currentUser.profilePicture} 
+                      alt="Usuario" 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div style={headerStyles.avatarPlaceholder}>👤</div>
+                  )}
+                </div>
+
+                <div className="user-text" style={headerStyles.userText}>
+                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
+                  <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
+                  <span className="email" style={headerStyles.email}>
+                    {currentUser.username || user.email}
+                  </span>
+                  
+                  <button 
+                    className="logout-btn" 
+                    style={{
+                      ...headerStyles.logoutBtn,
+                      // Asegurar que el botón sea clickeable incluso cuando los modales estén abiertos
+                      pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+                    }}
+                    onClick={confirmLogout}
+                    onMouseOver={(e) => {
+                      if (!showLogoutConfirm && !showTimeoutWarning) {
                         e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
                         e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
                         e.currentTarget.style.transform = 'translateY(-2px)';
-                      }}
-                      onMouseOut={(e) => {
+                      }
+                    }}
+                    onMouseOut={(e) => {
+                      if (!showLogoutConfirm && !showTimeoutWarning) {
                         e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
                         e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
                         e.currentTarget.style.transform = 'translateY(0)';
-                      }}
-                    >
-                      <span>🚪</span> Cerrar sesión
-                    </button>
-                  </div>
+                      }
+                    }}
+                  >
+                    <span>🚪</span> Cerrar sesión
+                  </button>
                 </div>
+              </div>
 
-                <button 
-                  className="settings-btn" 
-                  style={headerStyles.settingsBtn}
-                  onClick={() => setActiveSection('config')}
-                  title="Configuración"
-                  onMouseOver={(e) => {
+              <button 
+                className="settings-btn" 
+                style={{
+                  ...headerStyles.settingsBtn,
+                  // Asegurar que el botón sea clickeable incluso cuando los modales estén abiertos
+                  pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+                }}
+                onClick={() => setActiveSection('config')}
+                title="Configuración"
+                onMouseOver={(e) => {
+                  if (!showLogoutConfirm && !showTimeoutWarning) {
                     e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
                     e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
                     e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
-                  }}
-                  onMouseOut={(e) => {
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!showLogoutConfirm && !showTimeoutWarning) {
                     e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
                     e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
                     e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
-                  }}
-                >
-                  ⚙️
-                </button>
-              </div>
-            </header>
-          </div>
+                  }
+                }}
+              >
+                ⚙️
+              </button>
+            </div>
+          </header>
+        </div>
 
-          {/* Botones de navegación */}
-          <div className="nav-buttons-container">
-            <div style={dashboardStyles.btnGroup} className="nav-btn-group">
-              <button 
-                style={{
-                  ...dashboardStyles.btn,
-                  backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
-                  color: activeSection === 'gmail' ? 'white' : '#666',
-                }}
-                onClick={() => setActiveSection('gmail')}
-                onMouseOver={(e) => {
-                  if (activeSection !== 'gmail') {
-                    e.currentTarget.style.backgroundColor = '#e0e0e0';
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (activeSection !== 'gmail') {
-                    e.currentTarget.style.backgroundColor = '#f5f5f5';
-                  }
-                }}
-              >
-                <span>📧</span> Cuentas de Gmail
-              </button>
-              <button 
-                style={{
-                  ...dashboardStyles.btn,
-                  backgroundColor: activeSection === 'other' ? '#007bff' : '#f5f5f5',
-                  color: activeSection === 'other' ? 'white' : '#666',
-                }}
-                onClick={() => setActiveSection('other')}
-                onMouseOver={(e) => {
-                  if (activeSection !== 'other') {
-                    e.currentTarget.style.backgroundColor = '#e0e0e0';
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (activeSection !== 'other') {
-                    e.currentTarget.style.backgroundColor = '#f5f5f5';
-                  }
-                }}
-              >
-                <span>👥</span> Otras Cuentas
-              </button>
-              <button 
-                style={{
-                  ...dashboardStyles.btn,
-                  backgroundColor: activeSection === 'bank' ? '#007bff' : '#f5f5f5',
-                  color: activeSection === 'bank' ? 'white' : '#666',
-                }}
-                onClick={() => setActiveSection('bank')}
-                onMouseOver={(e) => {
-                  if (activeSection !== 'bank') {
-                    e.currentTarget.style.backgroundColor = '#e0e0e0';
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (activeSection !== 'bank') {
-                    e.currentTarget.style.backgroundColor = '#f5f5f5';
-                  }
-                }}
-              >
-                <span>🏦</span> Datos Bancarios
-              </button>
-            </div>
+        {/* Botones de navegación */}
+        <div className="nav-buttons-container">
+          <div style={dashboardStyles.btnGroup} className="nav-btn-group">
+            <button 
+              style={{
+                ...dashboardStyles.btn,
+                backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
+                color: activeSection === 'gmail' ? 'white' : '#666',
+                // Asegurar que los botones sean clickeables
+                pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+              }}
+              onClick={() => setActiveSection('gmail')}
+              onMouseOver={(e) => {
+                if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'gmail') {
+                  e.currentTarget.style.backgroundColor = '#e0e0e0';
+                }
+              }}
+              onMouseOut={(e) => {
+                if (!showLogoutConfirm && !showTimeoutWarning && activeSection !== 'gmail') {
+                  e.currentTarget.style.backgroundColor = '#f5f5f5';
+                }
+              }}
+            >
+              <span>📧</span> Cuentas de Gmail
+            </button>
+            {/* ... (repetir para otros botones con la misma lógica) */}
           </div>
-          
-          {/* Contenido principal */}
-          <div className="section-content-wrapper">
-            <div className="section-content" style={{ minHeight: '400px' }}>
-              {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
-              {activeSection === 'other' && <OtherAccounts user={currentUser} />}
-              {activeSection === 'bank' && <BankData user={currentUser} />}
-              {activeSection === 'config' && <UserConfigSection />}
-            </div>
+        </div>
+        
+        {/* Contenido principal */}
+        <div className="section-content-wrapper">
+          <div className="section-content" style={{ 
+            minHeight: '400px',
+            // Deshabilitar contenido principal cuando los modales estén abiertos
+            pointerEvents: (showLogoutConfirm || showTimeoutWarning) ? 'none' : 'auto',
+          }}>
+            {activeSection === 'gmail' && <GmailAccounts user={currentUser} />}
+            {activeSection === 'other' && <OtherAccounts user={currentUser} />}
+            {activeSection === 'bank' && <BankData user={currentUser} />}
+            {activeSection === 'config' && <UserConfigSection />}
           </div>
         </div>
       </div>
-    </>
-  );
-};
-
-export default Dashboard;
+    </div>
+  </>
+);
