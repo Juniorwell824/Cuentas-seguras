@@ -981,28 +981,36 @@ const Dashboard = ({ user, handleLogout }) => {
     if (!showLogoutConfirm) return null;
 
     return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        animation: 'fadeIn 0.3s ease-in-out',
-      }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          padding: '30px',
-          maxWidth: '500px',
-          width: '90%',
-          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
-          animation: 'slideIn 0.3s ease-in-out',
-        }}>
+      <div 
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          animation: 'fadeIn 0.3s ease-in-out',
+          pointerEvents: 'auto',
+        }}
+        onClick={cancelLogout}
+      >
+        <div 
+          style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '30px',
+            maxWidth: '500px',
+            width: '90%',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+            animation: 'slideIn 0.3s ease-in-out',
+            pointerEvents: 'auto',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
           <div style={{ textAlign: 'center', marginBottom: '25px' }}>
             <div style={{
               fontSize: '60px',
@@ -1111,29 +1119,35 @@ const Dashboard = ({ user, handleLogout }) => {
     if (!showTimeoutWarning) return null;
 
     return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        animation: 'fadeIn 0.3s ease-in-out',
-      }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          padding: '30px',
-          maxWidth: '500px',
-          width: '90%',
-          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
-          animation: 'slideIn 0.3s ease-in-out',
-          textAlign: 'center',
-        }}>
+      <div 
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          animation: 'fadeIn 0.3s ease-in-out',
+          pointerEvents: 'auto',
+        }}
+      >
+        <div 
+          style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '30px',
+            maxWidth: '500px',
+            width: '90%',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
+            animation: 'slideIn 0.3s ease-in-out',
+            textAlign: 'center',
+            pointerEvents: 'auto',
+          }}
+        >
           <div style={{
             fontSize: '60px',
             marginBottom: '20px',
@@ -1421,9 +1435,291 @@ const Dashboard = ({ user, handleLogout }) => {
 
   return (
     <>
-      {/* 1. MODALES - Colocados primero para que estén encima de todo */}
-      <LogoutConfirmModal />
-      <TimeoutWarningModal />
+      {/* MODALES - Renderizados completamente independientes con z-index máximo */}
+      {showLogoutConfirm && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 999999,
+            pointerEvents: 'auto',
+          }}
+          onClick={cancelLogout}
+        >
+          <div 
+            style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '30px',
+              maxWidth: '500px',
+              width: '90%',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+              pointerEvents: 'auto',
+              position: 'relative',
+              zIndex: 1000000,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ textAlign: 'center', marginBottom: '25px' }}>
+              <div style={{
+                fontSize: '60px',
+                marginBottom: '15px',
+                color: '#ff6b6b'
+              }}>
+                ❓
+              </div>
+              <h2 style={{
+                margin: 0,
+                marginBottom: '10px',
+                color: '#333',
+                fontSize: '24px',
+                fontWeight: '600'
+              }}>
+                ¿Estás seguro?
+              </h2>
+              <p style={{
+                color: '#666',
+                fontSize: '16px',
+                lineHeight: '1.5',
+                margin: 0
+              }}>
+                Estás a punto de cerrar sesión de tu cuenta.<br />
+                ¿Deseas continuar?
+              </p>
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '15px',
+              marginTop: '25px'
+            }}>
+              <button
+                onClick={cancelLogout}
+                style={{
+                  padding: '12px 30px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  backgroundColor: '#6c757d',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  transition: 'all 0.3s',
+                  flex: 1,
+                  maxWidth: '150px'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#5a6268';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#6c757d';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={executeLogout}
+                style={{
+                  padding: '12px 30px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  transition: 'all 0.3s',
+                  flex: 1,
+                  maxWidth: '150px'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#c82333';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#dc3545';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                Sí, cerrar sesión
+              </button>
+            </div>
+            
+            <p style={{
+              textAlign: 'center',
+              color: '#999',
+              fontSize: '14px',
+              marginTop: '20px',
+              paddingTop: '20px',
+              borderTop: '1px solid #eee'
+            }}>
+              Tu información se guardará automáticamente
+            </p>
+          </div>
+        </div>
+      )}
+
+      {showTimeoutWarning && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 999999,
+            pointerEvents: 'auto',
+          }}
+        >
+          <div 
+            style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '30px',
+              maxWidth: '500px',
+              width: '90%',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
+              textAlign: 'center',
+              pointerEvents: 'auto',
+              position: 'relative',
+              zIndex: 1000000,
+            }}
+          >
+            <div style={{
+              fontSize: '60px',
+              marginBottom: '20px',
+              color: '#ff9800'
+            }}>
+              ⏰
+            </div>
+            
+            <h2 style={{
+              margin: 0,
+              marginBottom: '15px',
+              color: '#333',
+              fontSize: '24px',
+              fontWeight: '600'
+            }}>
+              Sesión por expirar
+            </h2>
+            
+            <p style={{
+              color: '#666',
+              fontSize: '16px',
+              lineHeight: '1.5',
+              marginBottom: '25px'
+            }}>
+              Tu sesión se cerrará automáticamente por inactividad en:
+            </p>
+            
+            <div style={{
+              fontSize: '48px',
+              fontWeight: '700',
+              color: '#dc3545',
+              margin: '20px 0',
+              fontFamily: 'monospace',
+            }}>
+              {timeoutCountdown}s
+            </div>
+            
+            <p style={{
+              color: '#666',
+              fontSize: '14px',
+              marginBottom: '30px',
+              padding: '15px',
+              backgroundColor: '#fff3cd',
+              borderRadius: '8px',
+              border: '1px solid #ffeaa7'
+            }}>
+              ⚠️ Por seguridad, tu sesión se cerrará automáticamente después de 2 minutos de inactividad.
+            </p>
+            
+            <div style={{
+              display: 'flex',
+              gap: '15px',
+              justifyContent: 'center'
+            }}>
+              <button
+                onClick={extendSession}
+                style={{
+                  padding: '15px 30px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s',
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#218838';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#28a745';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <span>↻</span> Continuar sesión
+              </button>
+              
+              <button
+                onClick={handleAutoLogout}
+                style={{
+                  padding: '15px 30px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  backgroundColor: '#6c757d',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s',
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#5a6268';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#6c757d';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <span>🚪</span> Cerrar ahora
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="dashboard-layout">
         {/* Indicador de inactividad (solo visible cuando está cerca el timeout) */}
