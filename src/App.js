@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth } from './firebase/config';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { supabase } from './supabase/config';
 import Login from './components/Login';
 import Register from './components/Register';
 import ForgotPassword from './components/ForgotPassword';
@@ -10,24 +9,30 @@ import './App.css';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('login'); // 'login', 'register', 'forgotPassword', 'dashboard'
+  const [view, setView] = useState('login');
 
-  // Verificar estado de autenticación
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
-      if (user) {
+      if (session?.user) setView('dashboard');
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
         setView('dashboard');
+      } else {
+        setView('login');
       }
     });
 
-    return () => unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await supabase.auth.signOut();
       setView('login');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
@@ -37,8 +42,9 @@ function App() {
   if (loading) {
     return (
       <div className="auth-container">
-        <div className="auth-card">
-          <div className="text-center">Cargando...</div>
+        <div className="auth-card" style={{ textAlign: 'center' }}>
+          <div className="loading-spinner"></div>
+          <p style={{ color: '#7A99B8', marginTop: '16px' }}>Cargando...</p>
         </div>
       </div>
     );
@@ -48,15 +54,9 @@ function App() {
     <div className="App">
       {!user ? (
         <div className="auth-container">
-          {view === 'login' && (
-            <Login setView={setView} />
-          )}
-          {view === 'register' && (
-            <Register setView={setView} />
-          )}
-          {view === 'forgotPassword' && (
-            <ForgotPassword setView={setView} />
-          )}
+          {view === 'login' && <Login setView={setView} />}
+          {view === 'register' && <Register setView={setView} />}
+          {view === 'forgotPassword' && <ForgotPassword setView={setView} />}
         </div>
       ) : (
         <Dashboard user={user} handleLogout={handleLogout} />
