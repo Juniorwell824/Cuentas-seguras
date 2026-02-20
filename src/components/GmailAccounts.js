@@ -205,14 +205,16 @@ const GmailAccounts = ({ user }) => {
           </h3>
           <span style={{
             marginLeft: '10px',
-            backgroundColor: '#48bb78',
-            color: 'white',
-            padding: '3px 8px',
-            borderRadius: '12px',
-            fontSize: '12px',
-            fontWeight: 'bold'
+            background: 'rgba(0,214,143,0.12)',
+            border: '1px solid rgba(0,214,143,0.3)',
+            color: '#00D68F',
+            padding: '3px 10px',
+            borderRadius: '20px',
+            fontSize: '11px',
+            fontWeight: '700',
+            letterSpacing: '0.5px'
           }}>
-            ENCRIPTADO
+            🔒 ENCRIPTADO
           </span>
           {isEditing && (
             <button
@@ -225,7 +227,7 @@ const GmailAccounts = ({ user }) => {
             </button>
           )}
         </div>
-        <p style={{ color: '#666', fontSize: '14px', marginBottom: '15px' }}>
+        <p style={{ color: '#7A99B8', fontSize: '13px', marginBottom: '15px' }}>
           {isEditing 
             ? 'Los datos actualizados se encriptarán antes de guardarse'
             : 'Todos los datos se encriptan antes de guardarse en la base de datos'
@@ -268,8 +270,10 @@ const GmailAccounts = ({ user }) => {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    color: '#667eea',
-                    fontSize: '14px'
+                    color: '#00E5FF',
+                    fontSize: '13px',
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: '500'
                   }}
                   onClick={() => setShowPassword(!showPassword)}
                 >
@@ -328,7 +332,7 @@ const GmailAccounts = ({ user }) => {
       
       {accounts.length === 0 ? (
         <div className="data-card">
-          <p style={{ textAlign: 'center', color: '#666' }}>
+          <p style={{ textAlign: 'center', color: '#7A99B8', padding: '20px 0' }}>
             No tienes cuentas de Gmail guardadas. Agrega una arriba.
           </p>
         </div>
@@ -336,71 +340,73 @@ const GmailAccounts = ({ user }) => {
         <div className="data-grid">
           {accounts.map((account) => (
             <div key={account.id} className="data-card">
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                <h4 style={{ margin: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                <h4 style={{ margin: 0, color: '#E8F4FF', fontFamily: "'Inter', sans-serif", fontSize: '14px', fontWeight: '600', wordBreak: 'break-all' }}>
                   {account.username}
                   {editingId === account.id && (
                     <span style={{ 
-                      marginLeft: '10px', 
-                      fontSize: '12px', 
-                      color: '#38a169',
-                      fontWeight: 'normal'
+                      marginLeft: '8px', 
+                      fontSize: '11px', 
+                      color: '#00D68F',
+                      fontWeight: '500'
                     }}>
                       (Editando)
                     </span>
                   )}
                 </h4>
                 <span style={{
-                  marginLeft: '10px',
-                  backgroundColor: '#ed8936',
-                  color: 'white',
-                  padding: '2px 6px',
-                  borderRadius: '10px',
-                  fontSize: '10px',
-                  fontWeight: 'bold'
+                  background: 'rgba(255,184,0,0.12)',
+                  border: '1px solid rgba(255,184,0,0.3)',
+                  color: '#FFB800',
+                  padding: '2px 8px',
+                  borderRadius: '20px',
+                  fontSize: '9px',
+                  fontWeight: '800',
+                  letterSpacing: '0.8px',
+                  flexShrink: 0
                 }}>
                   SEGURO
                 </span>
               </div>
-              <div style={{ position: 'relative', marginBottom: '10px' }}>
-                <p style={{ margin: 0 }}>
-                  <strong>Contraseña:</strong>{' '}
-                  <span style={{ 
-                    fontFamily: 'monospace',
-                    backgroundColor: '#f7fafc',
-                    padding: '2px 6px',
-                    borderRadius: '3px'
-                  }}>
-                    {showPasswordsList[account.id] ? account.password : '••••••••'}
-                  </span>
-                </p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', padding: '8px 10px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <span style={{ color: '#7A99B8', fontSize: '12px', marginRight: '8px', flexShrink: 0 }}>Contraseña:</span>
+                <span style={{ 
+                  fontFamily: 'monospace',
+                  color: showPasswordsList[account.id] ? '#E8F4FF' : '#4A6580',
+                  fontSize: '13px',
+                  letterSpacing: showPasswordsList[account.id] ? '0' : '2px',
+                  flex: 1
+                }}>
+                  {showPasswordsList[account.id] ? account.password : '••••••••'}
+                </span>
                 <button
                   type="button"
                   style={{
-                    position: 'absolute',
-                    right: '0',
-                    top: '0',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    color: '#667eea',
-                    fontSize: '14px'
+                    color: '#00E5FF',
+                    fontSize: '12px',
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: '500',
+                    flexShrink: 0,
+                    padding: '2px 4px'
                   }}
                   onClick={() => togglePasswordVisibility(account.id)}
                 >
-                  {showPasswordsList[account.id] ? '🙈 Ocultar' : '👁️ Mostrar'}
+                  {showPasswordsList[account.id] ? '🙈 Ocultar' : '👁 Mostrar'}
                 </button>
               </div>
-              <p>
-                <strong>Agregado:</strong>{' '}
+              <p style={{ color: '#7A99B8', fontSize: '12px', margin: '4px 0' }}>
+                <span style={{ color: '#4A6580' }}>Agregado:</span>{' '}
                 {account.createdAt?.toDate ? 
                   account.createdAt.toDate().toLocaleDateString() : 
                   'Fecha no disponible'
                 }
               </p>
               {account.updatedAt && (
-                <p>
-                  <strong>Actualizado:</strong>{' '}
+                <p style={{ color: '#7A99B8', fontSize: '12px', margin: '4px 0' }}>
+                  <span style={{ color: '#4A6580' }}>Actualizado:</span>{' '}
                   {account.updatedAt?.toDate ? 
                     account.updatedAt.toDate().toLocaleDateString() : 
                     'Fecha no disponible'

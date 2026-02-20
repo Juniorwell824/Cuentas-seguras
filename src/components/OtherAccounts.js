@@ -223,8 +223,9 @@ const OtherAccounts = ({ user }) => {
           </h3>
           <span style={{
             marginLeft: '10px',
-            backgroundColor: '#48bb78',
-            color: 'white',
+            background: 'rgba(0,214,143,0.12)',
+            border: '1px solid rgba(0,214,143,0.3)',
+            color: '#00D68F',
             padding: '3px 8px',
             borderRadius: '12px',
             fontSize: '12px',
@@ -243,7 +244,7 @@ const OtherAccounts = ({ user }) => {
             </button>
           )}
         </div>
-        <p style={{ color: '#666', fontSize: '14px', marginBottom: '15px' }}>
+        <p style={{ color: '#7A99B8', fontSize: '13px', marginBottom: '15px' }}>
           {isEditing 
             ? 'Los datos se actualizarán y volverán a encriptar con AES-256'
             : 'Todos los datos se encriptan con AES-256 antes de guardarse'
@@ -360,7 +361,7 @@ const OtherAccounts = ({ user }) => {
       
       {accounts.length === 0 ? (
         <div className="data-card">
-          <p style={{ textAlign: 'center', color: '#666' }}>
+          <p style={{ textAlign: 'center', color: '#7A99B8', padding: '20px 0' }}>
             No tienes cuentas guardadas. Agrega una arriba.
           </p>
         </div>
@@ -384,8 +385,9 @@ const OtherAccounts = ({ user }) => {
                 </h4>
                 <span style={{
                   marginLeft: '10px',
-                  backgroundColor: '#ed8936',
-                  color: 'white',
+                  background: 'rgba(255,184,0,0.12)',
+                  border: '1px solid rgba(255,184,0,0.3)',
+                  color: '#FFB800',
                   padding: '2px 6px',
                   borderRadius: '10px',
                   fontSize: '10px',
@@ -402,7 +404,8 @@ const OtherAccounts = ({ user }) => {
                   <strong>Contraseña:</strong>{' '}
                   <span style={{ 
                     fontFamily: 'monospace',
-                    backgroundColor: '#f7fafc',
+                    background: 'rgba(0,0,0,0.25)',
+                    border: '1px solid rgba(255,255,255,0.05)',
                     padding: '2px 6px',
                     borderRadius: '3px'
                   }}>

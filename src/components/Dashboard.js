@@ -498,26 +498,28 @@ const Dashboard = ({ user, handleLogout }) => {
     if (initialLoad) {
       return (
         <div style={{
-          background: 'white',
-          borderRadius: '12px',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border)',
+          borderRadius: '18px',
           padding: '30px',
-          boxShadow: '0 5px 15px rgba(0, 0, 0, 0.05)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
           maxWidth: '800px',
           margin: '0 auto',
           textAlign: 'center'
         }}>
           <div style={{ fontSize: '48px', marginBottom: '20px' }}>⏳</div>
-          <p style={{ color: '#666', fontSize: '16px' }}>Cargando configuración...</p>
+          <p style={{ color: '#7A99B8', fontSize: '15px' }}>Cargando configuración...</p>
         </div>
       );
     }
 
     return (
       <div style={{
-        background: 'white',
-        borderRadius: '12px',
+        background: '#141D2E',
+        border: '1px solid rgba(0,229,255,0.12)',
+        borderRadius: '18px',
         padding: '30px',
-        boxShadow: '0 5px 15px rgba(0, 0, 0, 0.05)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
         maxWidth: '800px',
         margin: '0 auto',
       }}>
@@ -526,8 +528,12 @@ const Dashboard = ({ user, handleLogout }) => {
           alignItems: 'center', 
           gap: '10px', 
           marginBottom: '30px', 
-          color: '#333',
-          fontSize: '24px'
+          color: '#E8F4FF',
+          fontFamily: "'Exo 2', 'Inter', sans-serif",
+          fontSize: '22px',
+          fontWeight: '700',
+          paddingBottom: '18px',
+          borderBottom: '1px solid rgba(0,229,255,0.12)'
         }}>
           <span>⚙️</span> Configuración de Usuario
         </h2>
@@ -539,12 +545,13 @@ const Dashboard = ({ user, handleLogout }) => {
         }}>
           {successMessage && (
             <div style={{ 
-              backgroundColor: '#d4edda', 
-              color: '#155724', 
-              padding: '15px', 
-              borderRadius: '8px',
-              border: '1px solid #c3e6cb',
-              marginBottom: '20px'
+              background: 'rgba(0,214,143,0.1)',
+              color: '#00D68F', 
+              padding: '14px 18px', 
+              borderRadius: '10px',
+              border: '1px solid rgba(0,214,143,0.25)',
+              marginBottom: '20px',
+              fontSize: '14px'
             }}>
               ✅ {successMessage}
             </div>
@@ -552,12 +559,13 @@ const Dashboard = ({ user, handleLogout }) => {
           
           {errors.submit && (
             <div style={{ 
-              backgroundColor: '#f8d7da', 
-              color: '#721c24', 
-              padding: '15px', 
-              borderRadius: '8px',
-              border: '1px solid #f5c6cb',
-              marginBottom: '20px'
+              background: 'rgba(255,77,103,0.1)',
+              color: '#FF4D67', 
+              padding: '14px 18px', 
+              borderRadius: '10px',
+              border: '1px solid rgba(255,77,103,0.25)',
+              marginBottom: '20px',
+              fontSize: '14px'
             }}>
               ❌ {errors.submit}
             </div>
@@ -567,12 +575,17 @@ const Dashboard = ({ user, handleLogout }) => {
           <div style={{ 
             marginBottom: '30px', 
             paddingBottom: '30px', 
-            borderBottom: '1px solid #eee' 
+            borderBottom: '1px solid rgba(0,229,255,0.1)' 
           }}>
             <h3 style={{ 
               marginBottom: '20px', 
-              color: '#333',
-              fontSize: '18px'
+              color: '#E8F4FF',
+              fontSize: '16px',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.8px',
+              fontSize: '12px',
+              color: '#7A99B8'
             }}>Foto de Perfil</h3>
             
             <div style={{ 
@@ -582,12 +595,13 @@ const Dashboard = ({ user, handleLogout }) => {
               gap: '20px' 
             }}>
               <div style={{
-                width: '150px',
-                height: '150px',
+                width: '130px',
+                height: '130px',
                 borderRadius: '50%',
                 overflow: 'hidden',
-                border: '5px solid #f0f0f0',
-                backgroundColor: '#f9f9f9',
+                border: '2px solid rgba(0,229,255,0.4)',
+                background: 'linear-gradient(135deg, rgba(0,229,255,0.18), rgba(0,229,255,0.05))',
+                boxShadow: '0 0 20px rgba(0,229,255,0.15)',
               }}>
                 {userConfig.profilePicture ? (
                   <img 
@@ -599,12 +613,12 @@ const Dashboard = ({ user, handleLogout }) => {
                   <div style={{ 
                     width: '100%', 
                     height: '100%', 
-                    display: '-flex', 
+                    display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center', 
-                    background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', 
-                    color: 'white', 
-                    fontSize: '60px' 
+                    background: 'linear-gradient(135deg, rgba(0,229,255,0.2), rgba(0,229,255,0.05))', 
+                    color: '#00E5FF', 
+                    fontSize: '55px' 
                   }}>
                     👤
                   </div>
@@ -620,23 +634,25 @@ const Dashboard = ({ user, handleLogout }) => {
                 <button 
                   type="button" 
                   style={{
-                    padding: '10px 20px',
-                    border: 'none',
-                    borderRadius: '8px',
-                    backgroundColor: '#6c757d',
-                    color: 'white',
+                    padding: '10px 22px',
+                    border: '1.5px solid rgba(0,229,255,0.35)',
+                    borderRadius: '10px',
+                    background: 'rgba(0,229,255,0.08)',
+                    color: '#00E5FF',
                     cursor: 'pointer',
-                    fontSize: '16px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    fontFamily: "'Inter', sans-serif",
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    transition: 'background-color 0.3s',
+                    transition: 'all 0.25s',
                     opacity: loading ? 0.5 : 1,
                     pointerEvents: loading ? 'none' : 'auto'
                   }}
                   onClick={handleSelectImage}
-                  onMouseOver={(e) => !loading && (e.currentTarget.style.backgroundColor = '#5a6268')}
-                  onMouseOut={(e) => !loading && (e.currentTarget.style.backgroundColor = '#6c757d')}
+                  onMouseOver={(e) => !loading && (e.currentTarget.style.background = 'rgba(0,229,255,0.15)')}
+                  onMouseOut={(e) => !loading && (e.currentTarget.style.background = 'rgba(0,229,255,0.08)')}
                 >
                   <span>📤</span> Elegir Foto
                 </button>
@@ -645,23 +661,25 @@ const Dashboard = ({ user, handleLogout }) => {
                   <button 
                     type="button" 
                     style={{
-                      padding: '10px 20px',
-                      border: 'none',
-                      borderRadius: '8px',
-                      backgroundColor: '#dc3545',
-                      color: 'white',
+                      padding: '10px 22px',
+                      border: '1.5px solid rgba(255,77,103,0.35)',
+                      borderRadius: '10px',
+                      background: 'rgba(255,77,103,0.08)',
+                      color: '#FF4D67',
                       cursor: 'pointer',
-                      fontSize: '16px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      fontFamily: "'Inter', sans-serif",
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
-                      transition: 'background-color 0.3s',
+                      transition: 'all 0.25s',
                       opacity: loading ? 0.5 : 1,
                       pointerEvents: loading ? 'none' : 'auto'
                     }}
                     onClick={handleRemoveImage}
-                    onMouseOver={(e) => !loading && (e.currentTarget.style.backgroundColor = '#c82333')}
-                    onMouseOut={(e) => !loading && (e.currentTarget.style.backgroundColor = '#dc3545')}
+                    onMouseOver={(e) => !loading && (e.currentTarget.style.background = 'rgba(255,77,103,0.16)')}
+                    onMouseOut={(e) => !loading && (e.currentTarget.style.background = 'rgba(255,77,103,0.08)')}
                   >
                     <span>🗑️</span> Eliminar
                   </button>
@@ -679,8 +697,8 @@ const Dashboard = ({ user, handleLogout }) => {
               
               {errors.profilePicture && (
                 <p style={{ 
-                  color: '#dc3545', 
-                  fontSize: '14px', 
+                  color: '#FF4D67', 
+                  fontSize: '13px', 
                   margin: '0',
                   textAlign: 'center'
                 }}>
@@ -689,8 +707,8 @@ const Dashboard = ({ user, handleLogout }) => {
               )}
               
               <p style={{ 
-                color: '#666', 
-                fontSize: '14px', 
+                color: '#4A6580', 
+                fontSize: '12px', 
                 textAlign: 'center',
                 maxWidth: '400px',
                 margin: '0'
@@ -708,11 +726,13 @@ const Dashboard = ({ user, handleLogout }) => {
             marginBottom: '20px'
           }}>
             <label htmlFor="username" style={{ 
-              fontWeight: '600', 
-              color: '#333',
-              fontSize: '14px'
+              fontWeight: '700', 
+              color: '#7A99B8',
+              fontSize: '11px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.8px'
             }}>
-              Nombre de Usuario <span style={{color: '#dc3545'}}>*</span>
+              Nombre de Usuario <span style={{color: '#FF4D67'}}>*</span>
             </label>
             <input
               type="text"
@@ -736,7 +756,7 @@ const Dashboard = ({ user, handleLogout }) => {
                 ❌ {errors.username}
               </p>
             )}
-            <p style={{ color: '#666', fontSize: '12px', margin: '5px 0 0 0' }}>
+            <p style={{ color: '#4A6580', fontSize: '11px', margin: '5px 0 0 0' }}>
               {userConfig.username.length}/30 caracteres
             </p>
           </div>
@@ -749,9 +769,11 @@ const Dashboard = ({ user, handleLogout }) => {
             marginBottom: '20px'
           }}>
             <label htmlFor="email" style={{ 
-              fontWeight: '600', 
-              color: '#333',
-              fontSize: '14px'
+              fontWeight: '700', 
+              color: '#7A99B8',
+              fontSize: '11px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.8px'
             }}>Correo Electrónico</label>
             <input
               type="email"
@@ -760,17 +782,18 @@ const Dashboard = ({ user, handleLogout }) => {
               value={userConfig.email}
               disabled
               style={{
-                padding: '12px 15px',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                fontSize: '16px',
-                backgroundColor: '#f5f5f5',
-                color: '#999',
-                cursor: 'not-allowed'
+                padding: '13px 16px',
+                border: '1.5px solid rgba(255,255,255,0.05)',
+                borderRadius: '10px',
+                fontSize: '15px',
+                background: 'rgba(255,255,255,0.03)',
+                color: '#4A6580',
+                cursor: 'not-allowed',
+                fontFamily: "'Inter', sans-serif"
               }}
               title="El correo no se puede cambiar"
             />
-            <p style={{ color: '#666', fontSize: '14px', margin: '5px 0 0 0' }}>
+            <p style={{ color: '#4A6580', fontSize: '12px', margin: '5px 0 0 0' }}>
               ⚠️ El correo electrónico no se puede modificar por ser único.
             </p>
           </div>
@@ -779,21 +802,25 @@ const Dashboard = ({ user, handleLogout }) => {
           <div style={{ 
             marginTop: '20px', 
             paddingTop: '20px', 
-            borderTop: '1px solid #eee' 
+            borderTop: '1px solid rgba(0,229,255,0.1)' 
           }}>
             <h3 style={{ 
               marginBottom: '20px', 
-              color: '#333',
-              fontSize: '18px'
+              color: '#7A99B8',
+              fontSize: '11px',
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              letterSpacing: '0.8px'
             }}>Cambiar Contraseña</h3>
             
             <p style={{ 
-              color: '#666', 
-              fontSize: '14px', 
+              color: '#7A99B8', 
+              fontSize: '13px', 
               marginBottom: '20px',
-              padding: '10px',
-              backgroundColor: '#f8f9fa',
-              borderRadius: '8px'
+              padding: '12px 16px',
+              background: 'rgba(0,229,255,0.05)',
+              border: '1px solid rgba(0,229,255,0.12)',
+              borderRadius: '10px'
             }}>
               🔒 Deja estos campos vacíos si no quieres cambiar la contraseña.
             </p>
@@ -867,7 +894,7 @@ const Dashboard = ({ user, handleLogout }) => {
                 </p>
               )}
               {userConfig.newPassword && !errors.newPassword && (
-                <p style={{ color: '#28a745', fontSize: '14px', margin: '5px 0 0 0' }}>
+                <p style={{ color: '#00D68F', fontSize: '12px', margin: '5px 0 0 0' }}>
                   ✅ Contraseña válida
                 </p>
               )}
@@ -907,7 +934,7 @@ const Dashboard = ({ user, handleLogout }) => {
                 </p>
               )}
               {userConfig.confirmPassword && !errors.confirmPassword && (
-                <p style={{ color: '#28a745', fontSize: '14px', margin: '5px 0 0 0' }}>
+                <p style={{ color: '#00D68F', fontSize: '12px', margin: '5px 0 0 0' }}>
                   ✅ Contraseñas coinciden
                 </p>
               )}
@@ -918,45 +945,48 @@ const Dashboard = ({ user, handleLogout }) => {
           <div style={{ 
             display: 'flex', 
             justifyContent: 'flex-end', 
-            gap: '15px', 
+            gap: '12px', 
             marginTop: '30px', 
-            paddingTop: '30px', 
-            borderTop: '1px solid #eee' 
+            paddingTop: '24px', 
+            borderTop: '1px solid rgba(0,229,255,0.1)' 
           }}>
             <button 
               type="button" 
               style={{
                 padding: '12px 24px',
-                border: 'none',
-                borderRadius: '8px',
-                backgroundColor: '#6c757d',
-                color: 'white',
+                border: '1.5px solid rgba(255,255,255,0.1)',
+                borderRadius: '10px',
+                background: 'transparent',
+                color: '#7A99B8',
                 cursor: 'pointer',
-                fontSize: '16px',
-                fontWeight: '500',
-                transition: 'background-color 0.3s',
+                fontSize: '14px',
+                fontWeight: '600',
+                fontFamily: "'Inter', sans-serif",
+                transition: 'all 0.25s',
                 opacity: loading ? 0.5 : 1,
                 pointerEvents: loading ? 'none' : 'auto'
               }}
               onClick={() => setActiveSection('gmail')}
-              onMouseOver={(e) => !loading && (e.currentTarget.style.backgroundColor = '#5a6268')}
-              onMouseOut={(e) => !loading && (e.currentTarget.style.backgroundColor = '#6c757d')}
+              onMouseOver={(e) => !loading && (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)')}
+              onMouseOut={(e) => !loading && (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
             >
               Cancelar
             </button>
             <button 
               type="submit" 
               style={{
-                padding: '12px 24px',
+                padding: '12px 28px',
                 border: 'none',
-                borderRadius: '8px',
-                backgroundColor: loading ? '#6c757d' : '#007bff',
-                color: 'white',
+                borderRadius: '10px',
+                background: loading ? 'rgba(0,229,255,0.4)' : '#00E5FF',
+                color: loading ? '#7A99B8' : '#05111F',
                 cursor: loading ? 'not-allowed' : 'pointer',
-                fontSize: '16px',
-                fontWeight: '500',
-                transition: 'background-color 0.3s',
-                opacity: loading ? 0.8 : 1,
+                fontSize: '14px',
+                fontWeight: '700',
+                fontFamily: "'Inter', sans-serif",
+                transition: 'all 0.25s',
+                opacity: loading ? 0.7 : 1,
+                boxShadow: loading ? 'none' : '0 4px 20px rgba(0,229,255,0.4)',
                 position: 'relative'
               }}
               disabled={loading}
@@ -1000,12 +1030,13 @@ const Dashboard = ({ user, handleLogout }) => {
       >
         <div 
           style={{
-            background: 'white',
-            borderRadius: '12px',
-            padding: '30px',
-            maxWidth: '500px',
+            background: '#141D2E',
+            border: '1px solid rgba(0,229,255,0.15)',
+            borderRadius: '18px',
+            padding: '32px',
+            maxWidth: '480px',
             width: '90%',
-            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.7)',
             animation: 'slideIn 0.3s ease-in-out',
             pointerEvents: 'auto',
           }}
@@ -1022,16 +1053,17 @@ const Dashboard = ({ user, handleLogout }) => {
             <h2 style={{
               margin: 0,
               marginBottom: '10px',
-              color: '#333',
-              fontSize: '24px',
-              fontWeight: '600'
+              color: '#E8F4FF',
+              fontFamily: "'Exo 2', 'Inter', sans-serif",
+              fontSize: '22px',
+              fontWeight: '700'
             }}>
               ¿Estás seguro?
             </h2>
             <p style={{
-              color: '#666',
-              fontSize: '16px',
-              lineHeight: '1.5',
+              color: '#7A99B8',
+              fontSize: '14px',
+              lineHeight: '1.6',
               margin: 0
             }}>
               Estás a punto de cerrar sesión de tu cuenta.<br />
@@ -1137,10 +1169,11 @@ const Dashboard = ({ user, handleLogout }) => {
       >
         <div 
           style={{
-            background: 'white',
-            borderRadius: '12px',
-            padding: '30px',
-            maxWidth: '500px',
+            background: '#141D2E',
+            border: '1px solid rgba(255,184,0,0.2)',
+            borderRadius: '18px',
+            padding: '28px',
+            maxWidth: '400px',
             width: '90%',
             boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
             animation: 'slideIn 0.3s ease-in-out',
@@ -1330,42 +1363,54 @@ const Dashboard = ({ user, handleLogout }) => {
       maxWidth: '1200px',
       margin: '0 auto',
       padding: '20px',
-      fontFamily: 'Arial, sans-serif'
+      fontFamily: "'Inter', 'Segoe UI', sans-serif",
     },
     btnGroup: {
       display: 'flex',
-      gap: '10px',
+      gap: '6px',
       marginBottom: '30px',
       flexWrap: 'wrap',
+      background: '#141D2E',
+      border: '1px solid rgba(0,229,255,0.12)',
+      borderRadius: '18px',
+      padding: '5px',
+      width: 'fit-content',
     },
     btn: {
-      padding: '12px 24px',
+      padding: '10px 20px',
       border: 'none',
-      borderRadius: '8px',
+      borderRadius: '12px',
       cursor: 'pointer',
-      fontSize: '16px',
-      fontWeight: '500',
-      transition: 'background-color 0.3s',
+      fontSize: '14px',
+      fontWeight: '600',
+      transition: 'all 0.25s cubic-bezier(0.4,0,0.2,1)',
       display: 'flex',
       alignItems: 'center',
       gap: '8px',
+      fontFamily: "'Inter', 'Segoe UI', sans-serif",
     },
   };
 
-  // Estilos específicos del header
+  // Estilos específicos del header — Tema EV Dark Cyan
   const headerStyles = {
     dashboardHeader: {
-      background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-      borderRadius: '12px',
-      padding: '20px 30px',
-      marginBottom: '30px',
-      boxShadow: '0 5px 20px rgba(106, 17, 203, 0.2)',
-      color: 'white',
+      background: 'linear-gradient(135deg, #0A0F1A 0%, #101827 60%, #0D1A2A 100%)',
+      borderRadius: '16px',
+      padding: '24px 30px',
+      marginBottom: '28px',
+      boxShadow: '0 4px 30px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.08)',
+      color: '#E8F4FF',
+      borderTop: '2px solid',
+      borderImage: 'linear-gradient(90deg, transparent, #00E5FF, transparent) 1',
+      position: 'relative',
+      overflow: 'hidden',
     },
     headerContent: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      position: 'relative',
+      zIndex: 1,
     },
     userInfo: {
       display: 'flex',
@@ -1377,8 +1422,9 @@ const Dashboard = ({ user, handleLogout }) => {
       height: '70px',
       borderRadius: '50%',
       overflow: 'hidden',
-      border: '4px solid rgba(255, 255, 255, 0.3)',
-      background: 'rgba(255, 255, 255, 0.2)',
+      border: '2px solid rgba(0,229,255,0.4)',
+      background: 'linear-gradient(135deg, rgba(0,229,255,0.18), rgba(0,229,255,0.05))',
+      boxShadow: '0 0 16px rgba(0,229,255,0.2)',
     },
     avatarPlaceholder: {
       width: '100%',
@@ -1386,49 +1432,52 @@ const Dashboard = ({ user, handleLogout }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: '32px',
+      fontSize: '30px',
+      color: '#00E5FF',
     },
     userText: {
       display: 'flex',
       flexDirection: 'column',
     },
     email: {
-      fontSize: '14px',
-      color: 'rgba(255, 255, 255, 0.9)',
+      fontSize: '13px',
+      color: '#7A99B8',
       marginTop: '5px',
       display: 'inline-block',
-      background: 'rgba(255, 255, 255, 0.1)',
-      padding: '5px 10px',
-      borderRadius: '6px',
+      background: 'rgba(0,229,255,0.07)',
+      border: '1px solid rgba(0,229,255,0.15)',
+      padding: '4px 12px',
+      borderRadius: '20px',
     },
     logoutBtn: {
       marginTop: '10px',
-      padding: '8px 20px',
-      background: 'rgba(255, 255, 255, 0.2)',
-      border: '2px solid rgba(255, 255, 255, 0.4)',
-      borderRadius: '8px',
-      color: 'white',
+      padding: '8px 18px',
+      background: 'rgba(255,77,103,0.1)',
+      border: '1.5px solid rgba(255,77,103,0.35)',
+      borderRadius: '10px',
+      color: '#FF4D67',
       cursor: 'pointer',
-      fontSize: '14px',
+      fontSize: '13px',
       fontWeight: '600',
-      transition: 'all 0.3s',
+      transition: 'all 0.25s',
       display: 'inline-flex',
       alignItems: 'center',
       gap: '8px',
-      maxWidth: '150px',
+      maxWidth: '160px',
+      fontFamily: "'Inter', 'Segoe UI', sans-serif",
     },
     settingsBtn: {
-      background: 'rgba(255, 255, 255, 0.2)',
-      border: '2px solid rgba(255, 255, 255, 0.4)',
+      background: 'rgba(0,229,255,0.07)',
+      border: '1.5px solid rgba(0,229,255,0.25)',
       borderRadius: '50%',
-      width: '50px',
-      height: '50px',
+      width: '48px',
+      height: '48px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       cursor: 'pointer',
       fontSize: '20px',
-      color: 'white',
+      color: '#00E5FF',
       transition: 'all 0.3s',
     },
   };
@@ -1770,8 +1819,8 @@ const Dashboard = ({ user, handleLogout }) => {
                   </div>
 
                   <div className="user-text" style={headerStyles.userText}>
-                    <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700' }}>Mi Gestor Seguro</h1>
-                    <p style={{ margin: '5px 0', fontSize: '16px', opacity: 0.9 }}>Bienvenido,</p>
+                    <h1 style={{ margin: 0, fontSize: '28px', fontWeight: '700', fontFamily: "'Exo 2', 'Inter', sans-serif", color: '#E8F4FF', letterSpacing: '-0.3px' }}>Mi Gestor Seguro</h1>
+                    <p style={{ margin: '5px 0', fontSize: '14px', color: '#4A6580' }}>Bienvenido,</p>
                     <span className="email" style={headerStyles.email}>
                       {currentUser.username || user.email}
                     </span>
@@ -1781,13 +1830,13 @@ const Dashboard = ({ user, handleLogout }) => {
                       style={headerStyles.logoutBtn}
                       onClick={confirmLogout}
                       onMouseOver={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.background = 'rgba(255,77,103,0.2)';
+                        e.currentTarget.style.borderColor = '#FF4D67';
                         e.currentTarget.style.transform = 'translateY(-2px)';
                       }}
                       onMouseOut={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                        e.currentTarget.style.background = 'rgba(255,77,103,0.1)';
+                        e.currentTarget.style.borderColor = 'rgba(255,77,103,0.35)';
                         e.currentTarget.style.transform = 'translateY(0)';
                       }}
                     >
@@ -1802,13 +1851,13 @@ const Dashboard = ({ user, handleLogout }) => {
                   onClick={() => setActiveSection('config')}
                   title="Configuración"
                   onMouseOver={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                    e.currentTarget.style.background = 'rgba(0,229,255,0.15)';
+                    e.currentTarget.style.borderColor = 'rgba(0,229,255,0.5)';
                     e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
                   }}
                   onMouseOut={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                    e.currentTarget.style.background = 'rgba(0,229,255,0.07)';
+                    e.currentTarget.style.borderColor = 'rgba(0,229,255,0.25)';
                     e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
                   }}
                 >
@@ -1824,18 +1873,21 @@ const Dashboard = ({ user, handleLogout }) => {
               <button 
                 style={{
                   ...dashboardStyles.btn,
-                  backgroundColor: activeSection === 'gmail' ? '#007bff' : '#f5f5f5',
-                  color: activeSection === 'gmail' ? 'white' : '#666',
+                  backgroundColor: activeSection === 'gmail' ? 'rgba(0,229,255,0.12)' : 'transparent',
+                  color: activeSection === 'gmail' ? '#00E5FF' : '#7A99B8',
+                  boxShadow: activeSection === 'gmail' ? '0 0 12px rgba(0,229,255,0.18)' : 'none',
                 }}
                 onClick={() => setActiveSection('gmail')}
                 onMouseOver={(e) => {
                   if (activeSection !== 'gmail') {
-                    e.currentTarget.style.backgroundColor = '#e0e0e0';
+                    e.currentTarget.style.backgroundColor = 'rgba(0,229,255,0.07)';
+                    e.currentTarget.style.color = '#00E5FF';
                   }
                 }}
                 onMouseOut={(e) => {
                   if (activeSection !== 'gmail') {
-                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#7A99B8';
                   }
                 }}
               >
@@ -1844,18 +1896,21 @@ const Dashboard = ({ user, handleLogout }) => {
               <button 
                 style={{
                   ...dashboardStyles.btn,
-                  backgroundColor: activeSection === 'other' ? '#007bff' : '#f5f5f5',
-                  color: activeSection === 'other' ? 'white' : '#666',
+                  backgroundColor: activeSection === 'other' ? 'rgba(0,229,255,0.12)' : 'transparent',
+                  color: activeSection === 'other' ? '#00E5FF' : '#7A99B8',
+                  boxShadow: activeSection === 'other' ? '0 0 12px rgba(0,229,255,0.18)' : 'none',
                 }}
                 onClick={() => setActiveSection('other')}
                 onMouseOver={(e) => {
                   if (activeSection !== 'other') {
-                    e.currentTarget.style.backgroundColor = '#e0e0e0';
+                    e.currentTarget.style.backgroundColor = 'rgba(0,229,255,0.07)';
+                    e.currentTarget.style.color = '#00E5FF';
                   }
                 }}
                 onMouseOut={(e) => {
                   if (activeSection !== 'other') {
-                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#7A99B8';
                   }
                 }}
               >
@@ -1864,18 +1919,21 @@ const Dashboard = ({ user, handleLogout }) => {
               <button 
                 style={{
                   ...dashboardStyles.btn,
-                  backgroundColor: activeSection === 'bank' ? '#007bff' : '#f5f5f5',
-                  color: activeSection === 'bank' ? 'white' : '#666',
+                  backgroundColor: activeSection === 'bank' ? 'rgba(0,229,255,0.12)' : 'transparent',
+                  color: activeSection === 'bank' ? '#00E5FF' : '#7A99B8',
+                  boxShadow: activeSection === 'bank' ? '0 0 12px rgba(0,229,255,0.18)' : 'none',
                 }}
                 onClick={() => setActiveSection('bank')}
                 onMouseOver={(e) => {
                   if (activeSection !== 'bank') {
-                    e.currentTarget.style.backgroundColor = '#e0e0e0';
+                    e.currentTarget.style.backgroundColor = 'rgba(0,229,255,0.07)';
+                    e.currentTarget.style.color = '#00E5FF';
                   }
                 }}
                 onMouseOut={(e) => {
                   if (activeSection !== 'bank') {
-                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#7A99B8';
                   }
                 }}
               >

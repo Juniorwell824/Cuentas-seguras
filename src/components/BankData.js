@@ -324,13 +324,13 @@ const BankData = ({ user }) => {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    backgroundColor: '#f0f0f0',
+    background: 'rgba(0,229,255,0.04)', border: '1px solid rgba(0,229,255,0.12)',
     border: '1px solid #ddd',
     padding: '8px 15px',
     borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '14px',
-    color: '#333',
+    color: '#E8F4FF',
     transition: 'all 0.3s ease',
     marginBottom: '10px',
     width: '100%',
@@ -338,7 +338,7 @@ const BankData = ({ user }) => {
   };
 
   const shareOptionStyle = {
-    backgroundColor: 'white',
+    background: '#141D2E',
     border: '1px solid #ddd',
     borderRadius: '8px',
     padding: '15px',
@@ -403,7 +403,7 @@ const BankData = ({ user }) => {
           )}
         </div>
         
-        <p style={{ color: '#666', fontSize: '14px', marginBottom: '15px' }}>
+        <p style={{ color: '#7A99B8', fontSize: '13px', marginBottom: '15px' }}>
           {isEditing 
             ? 'Edita los datos bancarios. Los cambios se guardarán encriptados.'
             : 'Todos los datos bancarios se encriptan con AES-256 para máxima seguridad'
@@ -534,7 +534,7 @@ const BankData = ({ user }) => {
         {bankAccounts.length > 0 && (
           <div className="accounts-toggle-wrapper">
             <span style={{
-              color: '#666',
+              color: '#7A99B8',
               fontSize: '14px',
               textAlign: 'center'
             }}>
@@ -546,7 +546,7 @@ const BankData = ({ user }) => {
       
       {bankAccounts.length === 0 ? (
         <div className="data-card">
-          <p style={{ textAlign: 'center', color: '#666' }}>
+          <p style={{ textAlign: 'center', color: '#7A99B8', padding: '20px 0' }}>
             No tienes datos bancarios guardados. Agrega unos arriba.
           </p>
         </div>
@@ -649,7 +649,7 @@ const BankData = ({ user }) => {
                     <button
                       style={{
                         ...shareButtonStyle,
-                        backgroundColor: '#f8f9fa',
+                        background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.04)',
                         border: '1px solid #6c757d',
                         color: '#6c757d'
                       }}
